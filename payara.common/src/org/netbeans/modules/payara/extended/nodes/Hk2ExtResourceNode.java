@@ -3,6 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
 package org.netbeans.modules.payara.extended.nodes;
 
 import java.util.ArrayList;

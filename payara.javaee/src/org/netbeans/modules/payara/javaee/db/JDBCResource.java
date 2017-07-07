@@ -39,6 +39,8 @@
  *
  * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
 package org.netbeans.modules.payara.javaee.db;
 
 import org.netbeans.modules.payara.tooling.utils.StringPrefixTree;

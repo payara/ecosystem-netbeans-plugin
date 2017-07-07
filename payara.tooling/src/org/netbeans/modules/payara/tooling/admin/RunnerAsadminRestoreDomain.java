@@ -37,6 +37,8 @@
  *
  * Contributor(s):
  */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
 package org.netbeans.modules.payara.tooling.admin;
 
 import static org.netbeans.modules.payara.tooling.admin.RunnerJava.PARAM_ASSIGN_VALUE;

@@ -37,7 +37,9 @@
  *
  * Contributor(s):
  */
- package org.netbeans.modules.payara.tooling.server.parser;
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
+package org.netbeans.modules.payara.tooling.server.parser;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,4 +1,3 @@
-// <editor-fold defaultstate="collapsed" desc=" License Header ">
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -40,7 +39,7 @@
  *
  * Portions Copyrighted 2008 Sun Microsystems, Inc.
  */
-//</editor-fold>
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.extended.nodes.actions;
 

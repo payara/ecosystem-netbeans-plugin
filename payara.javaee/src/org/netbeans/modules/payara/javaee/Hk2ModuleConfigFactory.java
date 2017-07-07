@@ -39,6 +39,8 @@
  * 
  * Portions Copyrighted 2008 Sun Microsystems, Inc.
  */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
 package org.netbeans.modules.payara.javaee;
 
 import org.netbeans.modules.j2ee.deployment.plugins.spi.config.ModuleConfigurationFactory2;
