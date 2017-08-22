@@ -36,7 +36,10 @@
  * made subject to such option by the copyright holder.
  *
  * Contributor(s):
- */package org.netbeans.modules.payara.tooling.server.config;
+ */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
+package org.netbeans.modules.payara.tooling.server.config;
 
 import java.util.EnumSet;
 import java.util.List;

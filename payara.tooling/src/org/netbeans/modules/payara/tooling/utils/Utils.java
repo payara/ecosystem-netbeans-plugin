@@ -36,7 +36,10 @@
  * made subject to such option by the copyright holder.
  *
  * Contributor(s):
- */package org.netbeans.modules.payara.tooling.utils;
+ */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
+package org.netbeans.modules.payara.tooling.utils;
 
 import java.io.File;
 import java.util.ArrayList;

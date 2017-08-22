@@ -28,6 +28,8 @@
  *
  * Portions Copyrighted 2007-2010 Sun Microsystems, Inc.
  */
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+
 package org.netbeans.modules.payara.eecommon.api.config;
 
 import java.io.File;
