@@ -49,6 +49,7 @@ import org.openide.util.ImageUtilities;
 /**
  *
  * @author Peter Williams
+ * @author Gaurav Gupta
  */
 public abstract class Decorator {
 
@@ -154,6 +155,24 @@ public abstract class Decorator {
      * @return true if disable is supported.
      */
     public boolean canDisable() {
+        return false;
+    }
+    
+    /**
+     * Can CDI Probe mode be enabled?
+     *
+     * @return true if CDI Probe mode enable is supported.
+     */
+    public boolean canCDIProbeEnable() {
+        return false;
+    }
+
+    /**
+     * Can CDI Probe mode be disabled?
+     *
+     * @return true if CDI Probe mode disable is supported.
+     */
+    public boolean canCDIProbeDisable() {
         return false;
     }
 

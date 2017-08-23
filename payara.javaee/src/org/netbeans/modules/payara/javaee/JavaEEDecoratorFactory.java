@@ -57,7 +57,8 @@ import org.openide.util.ImageUtilities;
 
 /**
  *
- * @author Peter Williams   
+ * @author Peter Williams
+ * @author Gaurav Gupta
  */
 public class JavaEEDecoratorFactory implements DecoratorFactory {
 
@@ -121,6 +122,8 @@ public class JavaEEDecoratorFactory implements DecoratorFactory {
         @Override public boolean canEnable() { return true; }
         @Override public boolean canDisable() { return true; }
         @Override public boolean canShowBrowser() { return true; }
+        @Override public boolean canCDIProbeEnable() { return true; }
+        @Override public boolean canCDIProbeDisable() { return true; }
         @Override public Image getIcon(int type) { return UISupport.getIcon(ServerIcon.WAR_ARCHIVE); }
     };
     

@@ -73,6 +73,8 @@ import org.netbeans.modules.payara.common.PartialCompletionException;
 import org.netbeans.modules.payara.common.nodes.actions.DeployDirectoryCookie;
 import org.netbeans.modules.payara.common.nodes.actions.DisableModulesCookie;
 import org.netbeans.modules.payara.common.nodes.actions.EditDetailsCookie;
+import org.netbeans.modules.payara.common.nodes.actions.DisableCDIProbeModeCookie;
+import org.netbeans.modules.payara.common.nodes.actions.EnableCDIProbeModeCookie;
 import org.netbeans.modules.payara.common.nodes.actions.EnableModulesCookie;
 import org.netbeans.modules.payara.common.nodes.actions.RefreshModulesCookie;
 import org.netbeans.modules.payara.common.nodes.actions.UndeployModuleCookie;
@@ -95,8 +97,11 @@ import org.netbeans.modules.payara.spi.PayaraModule;
  * HK2 nodes cookies.
  * <p/>
  * @author Tomas Kraus
+ * @author Gaurav Gupta
  */
 public class Hk2Cookie {
+    
+    private static final String CDI_PROBE_MODE_PROP = "applications.application.%s.property.cdiDevModeEnabled";
     
     ////////////////////////////////////////////////////////////////////////////
     // Inner classes                                                          //
@@ -153,7 +158,7 @@ public class Hk2Cookie {
          * Creates an instance of cookie for enabling module.
          * <p/>
          * @param lookup Lookup containing {@see CommonServerSupport}.
-         * @param name   Name of resource to be enabled.
+         * @param name Name of resource to be enabled.
          */
         Enable(final Lookup lookup, final String name) {
             super(lookup, name);
@@ -188,7 +193,7 @@ public class Hk2Cookie {
          * Creates an instance of cookie for disabling module.
          * <p/>
          * @param lookup Lookup containing {@see CommonServerSupport}.
-         * @param name   Name of resource to be enabled.
+         * @param name Name of resource to be disabled.
          */
         Disable(final Lookup lookup, final String name) {
             super(lookup, name);
@@ -206,6 +211,77 @@ public class Hk2Cookie {
                         instance, new CommandDisable(name, Util.computeTarget(
                         instance.getProperties())));
                 status = new WeakReference<Future<ResultString>>(future);
+                return future;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Enable CDI probe mode cookie.
+     */
+    static class EnableCDIProbeMode
+            extends Cookie implements EnableCDIProbeModeCookie {
+
+        
+        /**
+         * Creates an instance of cookie for enabling module.
+         * <p/>
+         * @param lookup Lookup containing {@see CommonServerSupport}.
+         * @param name Name of resource to be enabled in probe mode.
+         */
+        EnableCDIProbeMode(final Lookup lookup, final String name) {
+            super(lookup, name);
+        }
+
+        /**
+         * Enable application CDI probe mode on Payara server.
+         * <p/>
+         * @return Result of enable task execution.
+         */
+        @Override
+        public Future<ResultString> enableCDIProbeMode() {
+            if (instance != null) {
+                String key = String.format(CDI_PROBE_MODE_PROP, name);
+                Future<ResultString> future = ServerAdmin.<ResultString>exec(
+                        instance, new CommandSetProperty(key, Boolean.TRUE.toString()));
+                status = new WeakReference<>(future);
+                return future;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Disable node cookie.
+     */
+    static class DisableCDIProbeMode
+            extends Cookie implements DisableCDIProbeModeCookie {
+
+        /**
+         * Creates an instance of cookie for disabling module.
+         * <p/>
+         * @param lookup Lookup containing {@see CommonServerSupport}.
+         * @param name Name of resource to be disabled in probe mode.
+         */
+        DisableCDIProbeMode(final Lookup lookup, final String name) {
+            super(lookup, name);
+        }
+
+        /**
+         * Disable application CDI probe mode on Payara server.
+         * <p/>
+         * @return Result of disable task execution.
+         */
+        @Override
+        public Future<ResultString> disableCDIProbeMode() {
+            if (instance != null) {
+                String key = String.format(CDI_PROBE_MODE_PROP, name);
+                Future<ResultString> future = ServerAdmin.<ResultString>exec(
+                        instance, new CommandSetProperty(key, Boolean.FALSE.toString()));
+                status = new WeakReference<>(future);
                 return future;
             } else {
                 return null;
