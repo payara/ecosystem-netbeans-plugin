@@ -37,7 +37,7 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.data;
 
@@ -54,9 +54,11 @@ import org.openide.util.Parameters;
  * Payara server version.
  * <p/>
  * @author Tomas Kraus, Peter Benedikovic
+ * @author Gaurav Gupta
  */
 public enum PayaraVersion {
 
+    //add new version
     ////////////////////////////////////////////////////////////////////////////
     // Enum values                                                            //
     ////////////////////////////////////////////////////////////////////////////
@@ -84,9 +86,14 @@ public enum PayaraVersion {
     PF_4_1_1_164 ((short) 4, (short) 1, (short) 1, (short) 0, (short) 16, (short) 4, (short) 0, PayaraVersion.PF_4_1_1_164_STR),
     /** Payara 4.1.1.171 */
     PF_4_1_1_171 ((short) 4, (short) 1, (short) 1, (short) 0, (short) 17, (short) 1, (short) 0, PayaraVersion.PF_4_1_1_171_STR),
-    /** Payara 4.1.1.172 */
-    PF_4_1_1_172 ((short) 4, (short) 1, (short) 1, (short) 0, (short) 17, (short) 2, (short) 0, PayaraVersion.PF_4_1_1_172_STR);
+    /** Payara 4.1.2.172 */
+    PF_4_1_2_172 ((short) 4, (short) 1, (short) 2, (short) 0, (short) 17, (short) 2, (short) 0, PayaraVersion.PF_4_1_2_172_STR),
+    /** Payara 4.1.2.173 */
+    PF_4_1_2_173 ((short) 4, (short) 1, (short) 2, (short) 0, (short) 17, (short) 3, (short) 0, PayaraVersion.PF_4_1_2_173_STR),
+    /** Payara 5.0.0.173.SNAPSHOT */
+    PF_5_0_0_173_SNAPSHOT ((short) 5, (short) 0, (short) 0, (short) 0, (short) 17, (short) 3, (short) 0, PayaraVersion.PF_5_0_0_173_SNAPSHOT_STR);
     
+    //add new version
     /**  A <code>String</code> representation of GF_3 value. */
     static final String GF_3_STR = "3";
     /** Additional <code>String</code> representations of GF_3 value. */
@@ -136,10 +143,18 @@ public enum PayaraVersion {
     static final String PF_4_1_1_171_STR = "4.1.1.171";
     /** Additional <code>String</code> representations of 4.1.1.171 value. */
     static final String PF_4_1_1_171_STR_NEXT[] = {"4.1.1.171.0"};
-    /**  A <code>String</code> representation of PF_4_1_1_172 value. */
-    static final String PF_4_1_1_172_STR = "4.1.1.172";
-    /** Additional <code>String</code> representations of 4.1.1.172 value. */
-    static final String PF_4_1_1_172_STR_NEXT[] = {"4.1.1.172.0"};
+    /**  A <code>String</code> representation of PF_4_1_2_172 value. */
+    static final String PF_4_1_2_172_STR = "4.1.2.172";
+    /** Additional <code>String</code> representations of 4.1.2.172 value. */
+    static final String PF_4_1_2_172_STR_NEXT[] = {"4.1.2.172.0"};
+    /**  A <code>String</code> representation of PF_4_1_2_173 value. */
+    static final String PF_4_1_2_173_STR = "4.1.2.173";
+    /** Additional <code>String</code> representations of 4.1.2.173 value. */
+    static final String PF_4_1_2_173_STR_NEXT[] = {"4.1.2.173.0"};    
+    /**  A <code>String</code> representation of PF_5_0_0_173_SNAPSHOT value. */
+    static final String PF_5_0_0_173_SNAPSHOT_STR = "5.0.0.173.SNAPSHOT";
+    /** Additional <code>String</code> representations of 5.0.0.173.SNAPSHOT value. */
+    static final String PF_5_0_0_173_SNAPSHOT_STR_NEXT[] = {"5.0.0.173.0.SNAPSHOT"};    
     ////////////////////////////////////////////////////////////////////////////
     // Class attributes                                                       //
     ////////////////////////////////////////////////////////////////////////////
@@ -166,6 +181,7 @@ public enum PayaraVersion {
         for (PayaraVersion state : PayaraVersion.values()) {
             stringValuesMap.put(state.toString().toUpperCase(), state);
         }
+        //add new version
         initStringValuesMapFromArray(PF_4_1_144, PF_4_1_144_STR_NEXT);
         initStringValuesMapFromArray(PF_4_1_151, PF_4_1_151_STR_NEXT);
         initStringValuesMapFromArray(PF_4_1_152, PF_4_1_152_STR_NEXT);
@@ -176,7 +192,9 @@ public enum PayaraVersion {
         initStringValuesMapFromArray(PF_4_1_1_163, PF_4_1_1_163_STR_NEXT);
         initStringValuesMapFromArray(PF_4_1_1_164, PF_4_1_1_164_STR_NEXT);
         initStringValuesMapFromArray(PF_4_1_1_171, PF_4_1_1_171_STR_NEXT);
-        initStringValuesMapFromArray(PF_4_1_1_172, PF_4_1_1_172_STR_NEXT);
+        initStringValuesMapFromArray(PF_4_1_2_172, PF_4_1_2_172_STR_NEXT);
+        initStringValuesMapFromArray(PF_4_1_2_173, PF_4_1_2_173_STR_NEXT);
+        initStringValuesMapFromArray(PF_5_0_0_173_SNAPSHOT, PF_5_0_0_173_SNAPSHOT_STR_NEXT);
     }
     
 

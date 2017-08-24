@@ -56,6 +56,7 @@ import org.netbeans.modules.payara.tooling.data.PayaraServer;
  * on given Payara server entity object.
  * <p/>
  * @author Tomas Kraus, Peter Benedikovic
+ * @author Gaurav Gupta
  */
 public abstract class AdminFactory {
 
@@ -92,7 +93,9 @@ public abstract class AdminFactory {
             case PF_4_1_1_162:
             case PF_4_1_1_163:
             case PF_4_1_1_171:
-            case PF_4_1_1_172:
+            case PF_4_1_2_172:
+            case PF_4_1_2_173:
+            case PF_5_0_0_173_SNAPSHOT:
                 return AdminFactoryRest.getInstance();
             // Anything else is not unknown.
             default:

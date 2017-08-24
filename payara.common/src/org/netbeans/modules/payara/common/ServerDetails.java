@@ -58,9 +58,10 @@ import org.xml.sax.SAXException;
 /**
  *
  * @author vkraemer
+ * @author Gaurav Gupta
  */
 public enum ServerDetails {
-    
+    //add new version
     /**
      * details for an instance of Payara Server 4.1.144
      */
@@ -147,7 +148,7 @@ public enum ServerDetails {
     PAYARA_SERVER_4_1_1_164(NbBundle.getMessage(ServerDetails.class,"STR_411164_SERVER_NAME", new Object[]{}), // NOI18N
         "deployer:pfv3ee6wc", // NOI18N
         411164,
-        "http://bit.ly/2eG8vfN", // NOI18N
+        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.1.164/payara-4.1.1.164.zip", // NOI18N
         null 
     ),
     
@@ -157,7 +158,7 @@ public enum ServerDetails {
     PAYARA_SERVER_4_1_1_171(NbBundle.getMessage(ServerDetails.class,"STR_411171_SERVER_NAME", new Object[]{}), // NOI18N
         "deployer:pfv3ee6wc", // NOI18N
         411171,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.1.171/payara-4.1.1.171.zip", // NOI18N
+        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.1.171/payara-4.1.1.171.zip", // NOI18N
         null 
     ),
 
@@ -167,7 +168,27 @@ public enum ServerDetails {
     PAYARA_SERVER_4_1_2_172(NbBundle.getMessage(ServerDetails.class,"STR_412172_SERVER_NAME", new Object[]{}), // NOI18N
         "deployer:pfv3ee6wc", // NOI18N
         412172,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.2.172/payara-4.1.2.172.zip", // NOI18N
+        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.172/payara-4.1.2.172.zip", // NOI18N
+        null 
+    ),
+        
+    /**
+     * details for an instance of Payara Server 4.1.2.173
+     */
+    PAYARA_SERVER_4_1_2_173(NbBundle.getMessage(ServerDetails.class,"STR_412173_SERVER_NAME", new Object[]{}), // NOI18N
+        "deployer:pfv3ee6wc", // NOI18N
+        412173,
+        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.173/payara-4.1.2.173.zip", // NOI18N
+        null 
+    ),
+        
+    /**
+     * details for an instance of Payara Server 5.0.0.173-SNAPSHOT
+     */
+    PAYARA_SERVER_5_0_0_173_SNAPSHOT(NbBundle.getMessage(ServerDetails.class,"STR_500173_SNAPSHOT_SERVER_NAME", new Object[]{}), // NOI18N
+        "deployer:pfv3ee6wc", // NOI18N
+        500173,
+        " https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=fish.payara.distributions&a=payara&v=5.0.0.173-SNAPSHOT&p=zip", // NOI18N
         null 
     );
 
@@ -181,7 +202,10 @@ public enum ServerDetails {
     public static WizardDescriptor.InstantiatingIterator
             getInstantiatingIterator() {
         return new ServerWizardIterator(
+                //add new version
                 new ServerDetails[]{
+                    PAYARA_SERVER_5_0_0_173_SNAPSHOT,
+                    PAYARA_SERVER_4_1_2_173,
                     PAYARA_SERVER_4_1_2_172,
                     PAYARA_SERVER_4_1_1_171,
                     PAYARA_SERVER_4_1_1_164,
@@ -194,6 +218,8 @@ public enum ServerDetails {
                     PAYARA_SERVER_4_1_151,
                     PAYARA_SERVER_4_1_144},
                 new ServerDetails[]{
+                    PAYARA_SERVER_5_0_0_173_SNAPSHOT,
+                    PAYARA_SERVER_4_1_2_173,
                     PAYARA_SERVER_4_1_2_172,
                     PAYARA_SERVER_4_1_1_171,
                     PAYARA_SERVER_4_1_1_164,
@@ -219,6 +245,7 @@ public enum ServerDetails {
         ServerDetails sd = null;
         if (version != null) {
             switch (version) {
+                //add new version
                 case PF_4_1_144:
                     return PAYARA_SERVER_4_1_144.getVersion();
                 case PF_4_1_151:
@@ -235,8 +262,12 @@ public enum ServerDetails {
                     return PAYARA_SERVER_4_1_1_163.getVersion();
                 case PF_4_1_1_171:
                     return PAYARA_SERVER_4_1_1_171.getVersion();
-                case PF_4_1_1_172:
+                case PF_4_1_2_172:
                     return PAYARA_SERVER_4_1_2_172.getVersion();
+                case PF_4_1_2_173:
+                    return PAYARA_SERVER_4_1_2_173.getVersion();
+                case PF_5_0_0_173_SNAPSHOT:
+                    return PAYARA_SERVER_5_0_0_173_SNAPSHOT.getVersion();
                 default:
                     return -1;
             }
@@ -259,7 +290,7 @@ public enum ServerDetails {
         if (null == domainXml || !domainXml.isFile() || !domainXml.canRead()) {
             return -1;
         }
-        return hasDefaultConfig(domainXml) ? PAYARA_SERVER_4_1_2_172.getVersion() :
+        return hasDefaultConfig(domainXml) ? PAYARA_SERVER_4_1_2_173.getVersion() :
             PAYARA_SERVER_4_1_1_171.getVersion();
     }
 
