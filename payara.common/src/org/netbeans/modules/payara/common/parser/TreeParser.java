@@ -39,7 +39,7 @@
  * 
  * Portions Copyrighted 2008 Sun Microsystems, Inc.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common.parser;
 
@@ -85,6 +85,7 @@ public final class TreeParser extends DefaultHandler {
             // qname are treated correctly in the handler code.
             //                
             factory.setNamespaceAware(false);
+//            factory.setValidating(false);
             SAXParser saxParser = factory.newSAXParser();            
             DefaultHandler handler = new TreeParser(pathList);
             reader = new FileReader(xmlFile);
@@ -106,6 +107,7 @@ public final class TreeParser extends DefaultHandler {
                 }
             }
         }
+        
         return result;
     }
     
@@ -206,7 +208,7 @@ public final class TreeParser extends DefaultHandler {
         // this changes, considering caching using HashMap<String, String>
         //
         InputSource source = null;
-        FileObject folder = FileUtil.getConfigFile("DTDs/Payara");
+        FileObject folder = FileUtil.getConfigFile("DTDs/GlassFish");
         if(folder != null) {
             for(FileObject fo: folder.getChildren()) {
                 Object attr;

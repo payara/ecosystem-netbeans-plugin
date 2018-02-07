@@ -234,6 +234,12 @@ public abstract class PayaraConfiguration implements
             if (file.isFile() && file.canRead()) {
                 return Pair.of(file, false);
             }
+            
+            file = new File(module.getResourceDirectory(), "glassfish-resources");
+            if (file.isFile() && file.canRead()) {
+                return Pair.of(file, false);
+            }
+            
         }
         return null;
     }
@@ -391,7 +397,7 @@ public abstract class PayaraConfiguration implements
             ConfigurationException ce = new ConfigurationException(primarySunDD.getAbsolutePath(), ex);
             throw ce;
         }
-
+      
     }
 
     @Deprecated
