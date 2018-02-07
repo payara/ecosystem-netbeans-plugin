@@ -39,7 +39,7 @@
  *
  * Portions Copyrighted 2013 Sun Microsystems, Inc.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common.status;
 
@@ -72,10 +72,6 @@ public class AuthFailureStateListener extends BasicStateListener {
     ////////////////////////////////////////////////////////////////////////////
     // Class attributes                                                       //
     ////////////////////////////////////////////////////////////////////////////
-
-    /** Local logger. */
-    private static final Logger LOGGER
-            = PayaraLogger.get(AuthFailureStateListener.class);
 
     /** Minimal delay between displaying pop up windows [ms].
      *  <p/>

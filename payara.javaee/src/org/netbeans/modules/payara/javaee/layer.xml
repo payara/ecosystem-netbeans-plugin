@@ -38,7 +38,7 @@ made subject to such option by the copyright holder.
 
 Contributor(s):
 
-Portions Copyright [2017] [Payara Foundation and/or its affiliates] 
+Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates] 
 -->
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
@@ -144,18 +144,4 @@ Portions Copyright [2017] [Payara Foundation and/or its affiliates]
         </folder>
     </folder>
 
-    <folder name="Templates">
-        <folder name="WebLogicResources">
-            <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.glassfish.javaee.templates.Bundle"/>
-            <attr name="position" intvalue="1850"/>
-            <file name="weblogicDD">
-                <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/netbeans/modules/glassfish/javaee/resources/ConfigFile.gif"/>
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.modules.glassfish.javaee.templates.Bundle"/>
-                <attr name="instantiatingIterator" newvalue="org.netbeans.modules.glassfish.javaee.templates.WebLogicDDWizardIterator"/>
-                <attr name="template" boolvalue="true"/>
-                <attr name="templateCategory" stringvalue="j2ee-types,ear-types,sunresource-types,deployment-descriptor,web-types"/>
-                <attr name="templateWizardURL" urlvalue="nbresloc:/org/netbeans/modules/glassfish/javaee/templates/weblogicDD.html"/>
-            </file>
-        </folder>
-    </folder>
 </filesystem>

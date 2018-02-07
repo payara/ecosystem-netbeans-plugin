@@ -41,7 +41,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.javaee.db;
 
@@ -229,10 +229,7 @@ public class DriverMaps {
         //IBM DB2 
         dsClassMap.put("jdbc:db2:", "com.ibm.db2.jcc.DB2DataSource");
         //JDBC-ODBC Bridge
-        dsClassMap.put("jdbc:odbc:", "sun.jdbc.odbc.JdbcOdbcDriver");
-        //Microsoft SQL Server (Weblogic driver)
-        //dsClassMap.put("jdbc:weblogic:mssqlserver4:", "weblogic.jdbc.mssqlserver4.Driver");
-        
+        dsClassMap.put("jdbc:odbc:", "sun.jdbc.odbc.JdbcOdbcDriver");        
         //Oracle-thin
         dsClassMap.put("jdbc:oracle:thin:", "oracle.jdbc.pool.OracleDataSource");
         //Oracle //OCI 8i

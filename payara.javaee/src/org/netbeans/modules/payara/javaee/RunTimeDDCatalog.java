@@ -41,7 +41,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.javaee;
 
@@ -188,15 +188,6 @@ public class RunTimeDDCatalog extends GrammarQueryManager implements CatalogRead
         "SCHEMA:http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"                    , "web-app_3_0",
         "SCHEMA:http://java.sun.com/xml/ns/javaee/web-common_3_0.xsd"                    , "web-common_3_0",
         "SCHEMA:http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"                    , "web-fragment_3_0",
-
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-application-client/1.0/weblogic-application-client.xsd", "weblogic-application-client",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-application/1.0/weblogic-application.xsd", "weblogic-application",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-connector/1.0/weblogic-connector.xsd", "weblogic-connector",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-ejb-jar/1.0/weblogic-ejb-jar.xsd", "weblogic-ejb-jar",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-javaee/1.0/weblogic-javaee.xsd", "weblogic-javaee",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-jms/1.0/weblogic-jms.xsd", "weblogic-jms",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-web-app/1.0/weblogic-web-app.xsd", "weblogic-web-app",
-        "SCHEMA:http://xmlns.oracle.com/weblogic/weblogic-webservices/1.0/weblogic-webservices.xsd", "weblogic-webservices",
         "SCHEMA:http://xmlns.oracle.com/weblogic/jdbc-data-source/1.0/jdbc-data-source.xsd", "jdbc-data-source",
     };
 
@@ -610,26 +601,9 @@ public class RunTimeDDCatalog extends GrammarQueryManager implements CatalogRead
             return new org.xml.sax.InputSource(SCHEMASLOCATION+WEBSERVICES_CLIENT_1_2_XSD);
         } else if (XML_XSD.equals(systemId)) {
             return new org.xml.sax.InputSource(new java.io.StringReader(XML_XSD_DEF));
-        } else if (systemId != null && systemId.endsWith("weblogic-web-app.xsd")) { //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-web-app.xsd");  //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-ejb-jar.xsd")) {  //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-ejb-jar.xsd");  //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-application.xsd")) {  //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-application.xsd");  //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-application-client.xsd")) {  //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-application-client.xsd");  //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-connector.xsd")) {  //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-connector.xsd"); //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-javaee.xsd")) { //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-javaee.xsd"); //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-jms.xsd")) { //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-jms.xsd"); //NOI18N
-        } else if (systemId != null && systemId.endsWith("weblogic-webservices.xsd")) { //NOI18N
-            return new org.xml.sax.InputSource(SCHEMASLOCATION+"weblogic-webservices.xsd"); //NOI18N
         } else if (systemId != null && systemId.endsWith("jdbc-data-source.xsd")) { //NOI18N
             return new org.xml.sax.InputSource(SCHEMASLOCATION+"jdbc-data-source.xsd"); //NOI18N
-        }
-        else {
+        } else {
             return null;
         }
     }

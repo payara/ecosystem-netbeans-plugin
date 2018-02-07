@@ -39,14 +39,13 @@
  *
  * Portions Copyrighted 2015 Sun Microsystems, Inc.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.javaee;
 
 import org.netbeans.api.annotations.common.NonNull;
 import org.netbeans.modules.payara.common.PayaraInstance;
 import org.netbeans.modules.payara.common.PayaraInstanceProvider;
-import org.netbeans.modules.payara.eecommon.api.config.J2eeModuleHelper;
 import org.netbeans.modules.payara.tooling.data.PayaraVersion;
 import org.netbeans.modules.j2ee.deployment.common.api.ConfigurationException;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
@@ -89,15 +88,10 @@ abstract class AbstractHk2ConfigurationFactory implements ModuleConfigurationFac
     @Override
     public ModuleConfiguration create(final J2eeModule module)
             throws ConfigurationException {
-        ModuleConfiguration retVal = null;
+        ModuleConfiguration retVal;
         try {
-            if (J2eeModuleHelper.isPayaraWeb(module)) {
-                retVal = new ModuleConfigurationImpl(
-                        module, new Three1Configuration(module, PayaraVersion.PF_4_1_144), hk2dm);
-            } else {
-                retVal = new ModuleConfigurationImpl(
-                        module, new Hk2Configuration(module, PayaraVersion.PF_4_1_144), hk2dm);
-            }
+            retVal = new ModuleConfigurationImpl(
+                    module, new Hk2Configuration(module, PayaraVersion.PF_4_1_144), hk2dm);
         } catch (ConfigurationException ce) {
             throw ce;
         } catch (Exception ex) {
@@ -135,14 +129,8 @@ abstract class AbstractHk2ConfigurationFactory implements ModuleConfigurationFac
                     ? hk2dm
                     : (Hk2DeploymentManager) Hk2DeploymentFactory.createEe6()
                             .getDisconnectedDeploymentManager(instanceUrl);
-            if (version != null
-                    && PayaraVersion.ge(version, PayaraVersion.GF_3_1)) {
-                retVal = new ModuleConfigurationImpl(
-                        module, new Three1Configuration(module, version), dm);
-            } else {
-                retVal = new ModuleConfigurationImpl(
-                        module, new Hk2Configuration(module, version), dm);
-            }
+            retVal = new ModuleConfigurationImpl(
+                    module, new Hk2Configuration(module, version), dm);
         } catch (ConfigurationException ce) {
             throw ce;
         } catch (Exception ex) {
