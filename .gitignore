@@ -8,3 +8,5 @@
 /payara.tooling/build/
 /nbproject/private/
 /build/
+/payara.micro/nbproject/private/
+/payara.micro/build/
