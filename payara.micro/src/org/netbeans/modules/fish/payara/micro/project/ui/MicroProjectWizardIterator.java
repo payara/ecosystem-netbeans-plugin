@@ -71,7 +71,7 @@ import org.openide.util.NbBundle.Messages;
         position = 200,
         displayName = "#template.PayaraMicroApp",
         iconBase = "org/netbeans/modules/fish/payara/micro/project/resources/payara-micro.png",
-        description = "../resources/PayaraMicroAppDescription.html"
+        description = "../resources/PayaraMicroProjectDescription.html"
 )
 @Messages("template.PayaraMicroApp=Payara Micro Application")
 public final class PayaraMicroWizardIterator extends BaseWizardIterator {

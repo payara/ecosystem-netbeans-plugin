@@ -48,6 +48,8 @@ import org.netbeans.spi.project.ActionProvider;
  */
 public class Constants {
 
+    public static final String VERSION = "version";
+
     public static final String WAR_PACKAGING = "war";
 
     public static final String MAVEN_WAR_PROJECT_TYPE = "org-netbeans-modules-maven/" + NbMavenProject.TYPE_WAR;

@@ -44,6 +44,7 @@ import static org.netbeans.modules.fish.payara.micro.project.ui.PayaraMicroWizar
 import static org.netbeans.modules.fish.payara.micro.project.ui.PayaraMicroWizardIterator.PROP_PAYARA_MICRO_VERSION;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import org.netbeans.modules.fish.payara.micro.project.MicroVersion;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.openide.WizardDescriptor;
 
@@ -64,9 +65,10 @@ class PayaraMicroPanel extends JPanel {
     }
 
     void readSettings(WizardDescriptor descriptor) {
-        String microVersion = (String) descriptor.getProperty(PROP_PAYARA_MICRO_VERSION);
-        if (microVersion != null) {
-            microVersionCombobox.setSelectedItem(microVersion);
+        String microVersionText = (String) descriptor.getProperty(PROP_PAYARA_MICRO_VERSION);
+        if (microVersionText != null) {
+            VersionRepository.toMicroVersion(microVersionText)
+                    .ifPresent(microVersion -> microVersionCombobox.setSelectedItem(microVersion));
         }
         
         String autoBindHTTP = (String)descriptor.getProperty(PROP_AUTO_BIND_HTTP);
@@ -77,7 +79,7 @@ class PayaraMicroPanel extends JPanel {
     }
 
     void storeSettings(WizardDescriptor descriptor) {
-        descriptor.putProperty(PROP_PAYARA_MICRO_VERSION, microVersionCombobox.getSelectedItem());
+        descriptor.putProperty(PROP_PAYARA_MICRO_VERSION, ((MicroVersion)microVersionCombobox.getSelectedItem()).getVersion());
         descriptor.putProperty(PROP_AUTO_BIND_HTTP, String.valueOf(autoBindHttpCheckBox.isSelected()));
     }
 
@@ -90,7 +92,7 @@ class PayaraMicroPanel extends JPanel {
         autoBindHttpLabel = new javax.swing.JLabel();
         autoBindHttpCheckBox = new javax.swing.JCheckBox();
 
-        microVersionCombobox.setModel(new DefaultComboBoxModel(VersionRepository.getInstance().getPayaraMicroVersion().toArray()));
+        microVersionCombobox.setModel(new DefaultComboBoxModel(VersionRepository.getInstance().getMicroVersion().toArray()));
 
         org.openide.awt.Mnemonics.setLocalizedText(microVersionLabel, org.openide.util.NbBundle.getMessage(PayaraMicroPanel.class, "PayaraMicroPanel.microVersionLabel.text")); // NOI18N
 

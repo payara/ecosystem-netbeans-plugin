@@ -46,8 +46,11 @@ import static org.netbeans.modules.fish.payara.micro.Constants.WAR_PACKAGING;
 import org.netbeans.modules.fish.payara.micro.project.MicroApplication;
 import java.io.InputStream;
 import java.util.Set;
+import java.util.prefs.Preferences;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.netbeans.api.project.Project;
+import static org.netbeans.api.project.ProjectUtils.getPreferences;
+import static org.netbeans.modules.fish.payara.micro.Constants.VERSION;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
@@ -106,7 +109,13 @@ public class PayaraActionsProvider implements MavenActionsProvider {// extends A
 
     @Override
     public RunConfig createConfigForDefaultAction(String actionName, Project project, Lookup lookup) {
-        return abstractMavenActionsProvider.createConfigForDefaultAction(actionName, project, lookup);
+        Preferences pref = getPreferences(project, MicroApplication.class, true);
+        String microVersionText = pref.get(VERSION, "");
+        RunConfig config = abstractMavenActionsProvider.createConfigForDefaultAction(actionName, project, lookup);
+        if(!microVersionText.isEmpty()){
+            config.setProperty("version.payara.micro", microVersionText);
+        }
+        return config;
     }
 
     @Override

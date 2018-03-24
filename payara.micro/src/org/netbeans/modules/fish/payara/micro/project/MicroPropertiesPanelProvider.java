@@ -38,48 +38,50 @@
  */
 package org.netbeans.modules.fish.payara.micro.project;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import javax.swing.JComponent;
+import org.netbeans.api.project.Project;
+import org.netbeans.modules.maven.api.customizer.ModelHandle2;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Gaurav Gupta <gaurav.gupta@payara.fish>
  */
-public class VersionRepository {
+public class MicroPropertiesPanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
 
-    private static VersionRepository versionRepository;
-    private static final List<MicroVersion> MICRO_VERSIONS = new ArrayList<>();
-
-    private VersionRepository() {
-        MICRO_VERSIONS.add(new MicroVersion("5.Beta2", "8.0"));
-        MICRO_VERSIONS.add(new MicroVersion("4.1.2.181", "7.0"));
-        MICRO_VERSIONS.add(new MicroVersion("4.1.2.174", "7.0"));
-    }
-
-    public static VersionRepository getInstance() {
-        if (versionRepository == null) {
-            versionRepository = new VersionRepository();
-        }
-        return versionRepository;
-    }
-
-    public List<MicroVersion> getMicroVersion() {
-        return MICRO_VERSIONS;
+    @ProjectCustomizer.CompositeCategoryProvider.Registration(
+            projectType = "org-netbeans-modules-maven",
+//            category = "Run",
+            position = 305
+    )
+    public static MicroPropertiesPanelProvider createRun() {
+        return new MicroPropertiesPanelProvider();
     }
     
-    public static Optional<MicroVersion> toMicroVersion(String microVersion) {
-        return MICRO_VERSIONS
-                .stream()
-                .filter(micro -> micro.getVersion().equals(microVersion))
-                .findAny();
+    @Override
+    public ProjectCustomizer.Category createCategory(Lookup context) {
+        Project project = context.lookup(Project.class);
+        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
+        if (microApplication == null) {
+            return null;
+        }
+        return ProjectCustomizer.Category.create("PayaraMicro", "Payara Micro", null); // NOI18N
     }
 
-    public String getJavaEEVersion(String microVersion) {
-        return MICRO_VERSIONS.stream()
-                .filter(micro -> micro.getVersion().equals(microVersion))
-                .map(MicroVersion::getJavaeeVersion)
-                .findAny().get();
+    @Override
+    public JComponent createComponent(ProjectCustomizer.Category category, Lookup context) {
+        ModelHandle2 handle = context.lookup(ModelHandle2.class);
+        final Project project = context.lookup(Project.class);
+        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
+        if (microApplication == null) {
+            return null;
+        }
+        
+        MicroPropertiesPanel microPanel = new MicroPropertiesPanel(handle, project);
+        category.setOkButtonListener(event -> microPanel.applyChangesInAWT());
+        category.setStoreListener(event -> microPanel.applyChanges());
+        return microPanel;
     }
 
 }

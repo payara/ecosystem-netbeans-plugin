@@ -38,48 +38,41 @@
  */
 package org.netbeans.modules.fish.payara.micro.project;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 /**
  *
  * @author Gaurav Gupta <gaurav.gupta@payara.fish>
  */
-public class VersionRepository {
+public class MicroVersion {
 
-    private static VersionRepository versionRepository;
-    private static final List<MicroVersion> MICRO_VERSIONS = new ArrayList<>();
+    private final String version;
 
-    private VersionRepository() {
-        MICRO_VERSIONS.add(new MicroVersion("5.Beta2", "8.0"));
-        MICRO_VERSIONS.add(new MicroVersion("4.1.2.181", "7.0"));
-        MICRO_VERSIONS.add(new MicroVersion("4.1.2.174", "7.0"));
+    private final String javaeeVersion;
+
+    private final String displayName;
+
+    public MicroVersion(String version, String javaeeVersion) {
+        this.version = version;
+        this.javaeeVersion = javaeeVersion;
+        this.displayName = version;
     }
 
-    public static VersionRepository getInstance() {
-        if (versionRepository == null) {
-            versionRepository = new VersionRepository();
-        }
-        return versionRepository;
+    public MicroVersion(String version, String javaeeVersion, String displayName) {
+        this.version = version;
+        this.javaeeVersion = javaeeVersion;
+        this.displayName = displayName;
     }
 
-    public List<MicroVersion> getMicroVersion() {
-        return MICRO_VERSIONS;
-    }
-    
-    public static Optional<MicroVersion> toMicroVersion(String microVersion) {
-        return MICRO_VERSIONS
-                .stream()
-                .filter(micro -> micro.getVersion().equals(microVersion))
-                .findAny();
+    public String getVersion() {
+        return version;
     }
 
-    public String getJavaEEVersion(String microVersion) {
-        return MICRO_VERSIONS.stream()
-                .filter(micro -> micro.getVersion().equals(microVersion))
-                .map(MicroVersion::getJavaeeVersion)
-                .findAny().get();
+    public String getJavaeeVersion() {
+        return javaeeVersion;
+    }
+
+    @Override
+    public String toString() {
+        return displayName;
     }
 
 }
