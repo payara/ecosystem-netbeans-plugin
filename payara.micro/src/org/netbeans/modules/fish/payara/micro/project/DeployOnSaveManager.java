@@ -361,7 +361,7 @@ public final class DeployOnSaveManager {
                 return;
             }
             
-            MicroApplication microApplication = realProject.getLookup().lookup(MicroApplication.class);
+            MicroApplication microApplication = MicroApplication.getInstance(realProject);
             if(microApplication!=null){
                 microApplication.setLoading(true);
             }
@@ -420,7 +420,7 @@ public final class DeployOnSaveManager {
                 return;
             }
             
-            MicroApplication microApplication = realProject.getLookup().lookup(MicroApplication.class);
+            MicroApplication microApplication = MicroApplication.getInstance(realProject);
             if(microApplication!=null){
                 microApplication.setLoading(true);
             }

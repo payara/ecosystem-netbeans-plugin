@@ -40,10 +40,10 @@ package org.netbeans.modules.fish.payara.micro.project.ui;
 
 import org.netbeans.modules.fish.payara.micro.project.VersionRepository;
 import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.LBL_PayaraMicroSettings;
-import static org.netbeans.modules.fish.payara.micro.project.ui.PayaraMicroWizardIterator.PROP_AUTO_BIND_HTTP;
-import static org.netbeans.modules.fish.payara.micro.project.ui.PayaraMicroWizardIterator.PROP_PAYARA_MICRO_VERSION;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_AUTO_BIND_HTTP;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_PAYARA_MICRO_VERSION;
 import org.netbeans.modules.fish.payara.micro.project.MicroVersion;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.openide.WizardDescriptor;

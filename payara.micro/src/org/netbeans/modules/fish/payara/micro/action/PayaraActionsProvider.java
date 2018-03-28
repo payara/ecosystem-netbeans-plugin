@@ -51,6 +51,7 @@ import org.netbeans.api.annotations.common.StaticResource;
 import org.netbeans.api.project.Project;
 import static org.netbeans.api.project.ProjectUtils.getPreferences;
 import static org.netbeans.modules.fish.payara.micro.Constants.VERSION;
+import org.netbeans.modules.fish.payara.micro.project.MicroApplicationProvider;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunConfig;
 import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
@@ -86,7 +87,6 @@ public class PayaraActionsProvider implements MavenActionsProvider {// extends A
         @Override
         public boolean isActionEnable(String action, Project project, Lookup lookup) {
             NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
-            MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
             final String packagingType = nbMavenProject.getPackagingType();
             if (!WAR_PACKAGING.equals(packagingType)) {
                 return false;
@@ -102,7 +102,7 @@ public class PayaraActionsProvider implements MavenActionsProvider {// extends A
                 default:
                     return false;
             }
-            return microApplication != null;
+            return MicroApplication.getInstance(project) != null;
         }
 
     };

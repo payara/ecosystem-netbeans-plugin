@@ -79,8 +79,7 @@ public class ProfileMicroSartupArgs extends RunJarStartupArgs {
         interceptActionName(config, action, COMMAND_PROFILE);
         
         Project project = config.getProject();
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
-        if (microApplication != null) {
+        if (MicroApplication.getInstance(project) != null) {
             status = super.checkRunConfig(config, con);
         }
         

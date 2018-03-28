@@ -36,62 +36,24 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.netbeans.modules.fish.payara.micro.project.ui;
+package org.netbeans.modules.fish.payara.micro.project;
 
-import java.awt.Component;
-import javax.swing.event.ChangeListener;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule.Type;
-import org.openide.WizardDescriptor;
-import org.openide.util.HelpCtx;
+import org.netbeans.api.project.Project;
 
 /**
  *
  * @author Gaurav Gupta <gaurav.gupta@payara.fish>
  */
-public class PayaraMicroDescriptor implements WizardDescriptor.FinishablePanel<WizardDescriptor> {
+public class MicroApplicationProvider {
 
-    private final PayaraMicroPanel panel;
-
-    public PayaraMicroDescriptor(Type projectType) {
-        panel = new PayaraMicroPanel(projectType);
-    }
-
-    @Override
-    public Component getComponent() {
-        return panel;
-    }
-
-    @Override 
-    public void readSettings(WizardDescriptor wizardDescriptor) {
-        panel.readSettings(wizardDescriptor);
-    }
-
-    @Override 
-    public void storeSettings(WizardDescriptor wizardDescriptor) {
-        panel.storeSettings(wizardDescriptor);
-    }
-
-    @Override 
-    public boolean isFinishPanel() {
-        return true;
-    }
-
-    @Override 
-    public boolean isValid() {
-        return true;
-    }
+    private MicroApplication microApplication;
     
-    @Override 
-    public HelpCtx getHelp() {
-        return HelpCtx.DEFAULT_HELP;
+    public MicroApplication getMicroApplication() {
+        return microApplication;
     }
 
-    @Override
-    public void addChangeListener(ChangeListener l) {
-    }
-
-    @Override
-    public void removeChangeListener(ChangeListener l) {
+    public void setMicroApplication(MicroApplication microApplication) {
+        this.microApplication = microApplication;
     }
 
 }

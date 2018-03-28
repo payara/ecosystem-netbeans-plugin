@@ -103,7 +103,7 @@ public class ExecutionChecker implements ExecutionResultChecker, PrerequisitesCh
     @Override
     public boolean checkRunConfig(RunConfig config) {
         Project project = config.getProject();
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
+        MicroApplication microApplication = MicroApplication.getInstance(project);
         if (microApplication != null) {
             if (BUILD_ACTIONS.contains(config.getActionName())) {
                 microApplication.setBuilding(true, config.getActionName());
@@ -117,7 +117,7 @@ public class ExecutionChecker implements ExecutionResultChecker, PrerequisitesCh
     @Override
     public void executionResult(RunConfig config, ExecutionContext res, int resultCode) {
         Project project = config.getProject();
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
+        MicroApplication microApplication = MicroApplication.getInstance(project);
         if (microApplication != null) {
             if (BUILD_ACTIONS.contains(config.getActionName())) {
                 if(config.getActionName().contains(COMMAND_BUILD) 

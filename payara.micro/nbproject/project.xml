@@ -159,7 +159,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.66.1</specification-version>
+                        <implementation-version/>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -319,7 +319,13 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>org.netbeans.modules.fish.payara.micro.project</package>
+            </public-packages>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-lang3-3.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/commons-lang3-3.7.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

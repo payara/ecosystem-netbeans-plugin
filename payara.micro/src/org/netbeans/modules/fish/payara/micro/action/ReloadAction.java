@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.maven.project.MavenProject;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.fish.payara.micro.project.MicroApplicationProvider;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunUtils;
 import static org.netbeans.modules.maven.api.execute.RunUtils.isCompileOnSaveEnabled;
@@ -73,13 +74,11 @@ public class ReloadAction {
 
     private final MavenProject mavenProject;
 
-    private final MicroApplication microApplication;
 
     public ReloadAction(Project project) {
         this.project = project;
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
         mavenProject = nbMavenProject.getMavenProject();
-        this.microApplication = project.getLookup().lookup(MicroApplication.class);
     }
 
     @NbBundle.Messages({
@@ -88,6 +87,7 @@ public class ReloadAction {
         "ERR_Payara_Micro_Plugin_Not_Found=Reload Error ({0} : Payara Micro plugin not found)"
     })
     public void actionPerformed() {
+        MicroApplication microApplication = MicroApplication.getInstance(project);
         if (microApplication == null) {
             StatusDisplayer.getDefault()
                     .setStatusText(ERR_Payara_Micro_Plugin_Not_Found(mavenProject.getArtifactId()));
@@ -100,7 +100,7 @@ public class ReloadAction {
     }
 
     public boolean isActionEnabled() {
-        return microApplication != null;
+        return MicroApplication.getInstance(project) != null;
     }
 
     public void runMavenCommands() {

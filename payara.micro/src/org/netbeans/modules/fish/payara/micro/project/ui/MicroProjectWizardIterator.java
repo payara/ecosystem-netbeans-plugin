@@ -51,7 +51,14 @@ import java.util.Set;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.templates.TemplateRegistration;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROJECT_TYPE;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_ARTIFACT_ID;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_AUTO_BIND_HTTP;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_GROUP_ID;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_JAVA_EE_VERSION;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_PACKAGE;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_PAYARA_MICRO_VERSION;
+import static org.netbeans.modules.fish.payara.micro.Constants.PROP_VERSION;
 import org.netbeans.modules.maven.api.archetype.Archetype;
 import org.netbeans.modules.maven.api.archetype.ArchetypeWizards;
 import org.netbeans.modules.maven.api.archetype.ProjectInfo;
@@ -74,16 +81,7 @@ import org.openide.util.NbBundle.Messages;
         description = "../resources/PayaraMicroProjectDescription.html"
 )
 @Messages("template.PayaraMicroApp=Payara Micro Application")
-public final class PayaraMicroWizardIterator extends BaseWizardIterator {
-
-    private static final J2eeModule.Type PROJECT_TYPE = J2eeModule.Type.WAR;
-    private static final String PROP_GROUP_ID = "groupId"; // NOI18N
-    private static final String PROP_ARTIFACT_ID = "artifactId"; // NOI18N
-    private static final String PROP_VERSION = "version"; // NOI18N
-    private static final String PROP_PACKAGE = "package"; // NOI18N
-    private static final String PROP_JAVA_EE_VERSION = "javaeeVersion"; // NOI18N
-    static final String PROP_PAYARA_MICRO_VERSION = "payaraMicroVersion"; // NOI18N
-    static final String PROP_AUTO_BIND_HTTP = "autoBindHttp"; // NOI18N
+public final class MicroProjectWizardIterator extends BaseWizardIterator {
 
     @Override
     public Set<FileObject> instantiate() throws IOException {

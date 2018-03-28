@@ -39,10 +39,6 @@
 package org.netbeans.modules.fish.payara.micro.project;
 
 import static org.netbeans.modules.fish.payara.micro.Constants.MAVEN_WAR_PROJECT_TYPE;
-import static org.netbeans.modules.fish.payara.micro.Constants.PAYARA_MICRO_MAVEN_PLUGIN;
-import org.apache.maven.project.MavenProject;
-import org.netbeans.api.project.Project;
-import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
@@ -56,18 +52,7 @@ public class LookupProviderImpl implements LookupProvider {
 
     @Override
     public Lookup createAdditionalLookup(Lookup lookup) {
-        Project prj = lookup.lookup(Project.class);
-        if (isPayaraMicroProject(prj)) {
-            return Lookups.fixed(new MicroApplication(prj));
-        }
-        return Lookups.fixed();
-    }
-
-    public static boolean isPayaraMicroProject(Project project) {
-        NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
-        MavenProject mavenProject = (MavenProject) nbMavenProject.getMavenProject();
-        return mavenProject.getPluginArtifactMap()
-                .get(PAYARA_MICRO_MAVEN_PLUGIN) != null;
+        return Lookups.fixed(new MicroApplicationProvider());
     }
 
 }

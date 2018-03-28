@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
 <!--
   
    Copyright (c) 2018 Payara Foundation and/or its affiliates. All rights reserved.
@@ -37,11 +38,11 @@
    only if the new code is made subject to such option by the copyright
    holder.
  -->
-<html>
-    <body>
-        <div> 
-            Maven Payara Micro Application project template, created with Maven Archetype Plugin.<br/>
-            Payara Micro is designed for running Java EE applications in a modern virtualized infrastructure and perfect for microservice and cloud environments..
-        </div>
-    </body>
-</html>
+<filesystem>
+        <folder name="Templates">
+        <folder name="PayaraResources">
+            <attr name="displayName" bundlevalue="org.netbeans.modules.fish.payara.micro.Bundle#Templates/PayaraResources"/>
+            <attr name="position" intvalue="1750"/>
+        </folder>
+    </folder>
+</filesystem>

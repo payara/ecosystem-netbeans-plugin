@@ -38,9 +38,12 @@
  */
 package org.netbeans.modules.fish.payara.micro.project;
 
+import org.apache.maven.project.MavenProject;
 import static org.netbeans.modules.fish.payara.micro.Constants.MAVEN_WAR_PROJECT_TYPE;
 import org.netbeans.api.project.Project;
+import static org.netbeans.modules.fish.payara.micro.Constants.PAYARA_MICRO_MAVEN_PLUGIN;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
+import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.spi.nodes.SpecialIcon;
 import org.netbeans.spi.project.ProjectServiceProvider;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
@@ -62,14 +65,31 @@ public class ProjectHookImpl extends ProjectOpenedHook {
     }
 
     @Override
-    protected void projectOpened() {
-        addDeployOnSaveManager(project);
-        updateMicroIcon();
+    public void projectOpened() {
+        initMicroProject(isPayaraMicroProject(project));
+    }
+
+    public void initMicroProject(boolean microProject) {
+        MicroApplicationProvider microApplicationProvider = project.getLookup().lookup(MicroApplicationProvider.class);
+        if (microProject) {
+            microApplicationProvider.setMicroApplication(new MicroApplication(project));
+            addDeployOnSaveManager(project);
+            updateMicroIcon();
+        } else {
+            microApplicationProvider.setMicroApplication(null);
+        }
     }
 
     @Override
-    protected void projectClosed() {
+    public void projectClosed() {
         removeDeployOnSaveManager(project);
+    }
+
+    public static boolean isPayaraMicroProject(Project project) {
+        NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
+        MavenProject mavenProject = (MavenProject) nbMavenProject.getMavenProject();
+        return mavenProject.getPluginArtifactMap()
+                .get(PAYARA_MICRO_MAVEN_PLUGIN) != null;
     }
 
     private void updateMicroIcon() {
@@ -86,16 +106,14 @@ public class ProjectHookImpl extends ProjectOpenedHook {
 
     private void addDeployOnSaveManager(Project project) {
         J2eeModuleProvider moduleProvider = project.getLookup().lookup(J2eeModuleProvider.class);
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
-        if (moduleProvider != null && microApplication != null) {
+        if (moduleProvider != null) {
             DeployOnSaveManager.getDefault().startListening(project, moduleProvider);
         }
     }
 
     private void removeDeployOnSaveManager(Project project) {
         J2eeModuleProvider moduleProvider = project.getLookup().lookup(J2eeModuleProvider.class);
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
-        if (moduleProvider != null && microApplication != null) {
+        if (moduleProvider != null && MicroApplication.getInstance(project) != null) {
             DeployOnSaveManager.getDefault().stopListening(project, moduleProvider);
         }
     }

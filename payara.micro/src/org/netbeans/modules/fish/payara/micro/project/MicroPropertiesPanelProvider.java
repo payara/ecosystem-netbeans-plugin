@@ -62,8 +62,7 @@ public class MicroPropertiesPanelProvider implements ProjectCustomizer.Composite
     @Override
     public ProjectCustomizer.Category createCategory(Lookup context) {
         Project project = context.lookup(Project.class);
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
-        if (microApplication == null) {
+        if (MicroApplication.getInstance(project) == null) {
             return null;
         }
         return ProjectCustomizer.Category.create("PayaraMicro", "Payara Micro", null); // NOI18N
@@ -73,8 +72,7 @@ public class MicroPropertiesPanelProvider implements ProjectCustomizer.Composite
     public JComponent createComponent(ProjectCustomizer.Category category, Lookup context) {
         ModelHandle2 handle = context.lookup(ModelHandle2.class);
         final Project project = context.lookup(Project.class);
-        MicroApplication microApplication = project.getLookup().lookup(MicroApplication.class);
-        if (microApplication == null) {
+        if (MicroApplication.getInstance(project) == null) {
             return null;
         }
         

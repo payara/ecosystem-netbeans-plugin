@@ -132,5 +132,14 @@ public class MicroApplication {
     public boolean isLoading() {
         return reloadAction;
     }
-
+    
+    public static MicroApplication getInstance(Project project) {
+        MicroApplication microApplication = null;
+        if (project != null) {
+            MicroApplicationProvider microApplicationProvider = project.getLookup().lookup(MicroApplicationProvider.class);
+            microApplication = microApplicationProvider != null ? microApplicationProvider.getMicroApplication() : null;
+        }
+        return microApplication;
+    }
+    
 }

@@ -39,6 +39,7 @@
 package org.netbeans.modules.fish.payara.micro;
 
 import org.netbeans.api.annotations.common.StaticResource;
+import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.spi.project.ActionProvider;
 
@@ -47,6 +48,17 @@ import org.netbeans.spi.project.ActionProvider;
  * @author Gaurav Gupta <gaurav.gupta@payara.fish>
  */
 public class Constants {
+    
+    public static final J2eeModule.Type PROJECT_TYPE = J2eeModule.Type.WAR;
+    
+    public static final String PROP_GROUP_ID = "groupId";
+    public static final String PROP_ARTIFACT_ID = "artifactId";
+    public static final String PROP_VERSION = "version";
+    public static final String PROP_PACKAGE = "package";
+    
+    public static final String PROP_JAVA_EE_VERSION = "javaeeVersion";
+    public static final String PROP_PAYARA_MICRO_VERSION = "payaraMicroVersion";
+    public static final String PROP_AUTO_BIND_HTTP = "autoBindHttp";
 
     public static final String VERSION = "version";
 

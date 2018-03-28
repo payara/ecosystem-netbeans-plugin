@@ -59,14 +59,15 @@ import static org.openide.util.ImageUtilities.loadImageIcon;
 )
 public class MicroIcon extends WarIcon {
 
-    private MicroApplication microApplication;
+    private Project project;
 
     public void setProject(Project project) {
-        this.microApplication = project.getLookup().lookup(MicroApplication.class);
+        this.project = project;
     }
 
     @Override
     public Icon getIcon() {
+        MicroApplication microApplication = MicroApplication.getInstance(project);
         String icon = PROJECT_ICON;
         if (microApplication == null) {
             return super.getIcon();
