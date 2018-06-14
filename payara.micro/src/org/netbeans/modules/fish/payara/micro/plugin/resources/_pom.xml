@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>fish.payara.micro</groupId>
-    <artifactId>micro-maven-plugin</artifactId>
+    <artifactId>payara-micro-sample</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 

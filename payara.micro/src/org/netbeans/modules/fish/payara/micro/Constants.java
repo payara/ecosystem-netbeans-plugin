@@ -80,7 +80,7 @@ public class Constants {
 
     public static final String ARCHETYPE_GROUP_ID = "fish.payara.maven.archetypes";
     public static final String ARCHETYPE_ARTIFACT_ID = "payara-micro-maven-archetype";
-    public static final String ARCHETYPE_VERSION = "1.0-SNAPSHOT";
+    public static final String ARCHETYPE_VERSION = "1.0";
     public static final String ARCHETYPE_REPOSITORY = "https://oss.sonatype.org/content/repositories/snapshots";
 
     
