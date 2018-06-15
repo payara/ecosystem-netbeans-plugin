@@ -87,7 +87,7 @@ public class ProjectHookImpl extends ProjectOpenedHook {
 
     public static boolean isPayaraMicroProject(Project project) {
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
-        MavenProject mavenProject = (MavenProject) nbMavenProject.getMavenProject();
+        MavenProject mavenProject = nbMavenProject.getMavenProject();
         return mavenProject.getPluginArtifactMap()
                 .get(PAYARA_MICRO_MAVEN_PLUGIN) != null;
     }

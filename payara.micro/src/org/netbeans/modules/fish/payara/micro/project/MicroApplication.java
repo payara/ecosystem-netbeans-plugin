@@ -38,6 +38,12 @@
  */
 package org.netbeans.modules.fish.payara.micro.project;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.maven.project.MavenProject;
 import org.netbeans.api.project.Project;
@@ -69,7 +75,7 @@ public class MicroApplication {
     public MicroApplication(Project project) {
         this.project = project;
         NbMavenProject nbMavenProject = project.getLookup().lookup(NbMavenProject.class);
-        this.mavenProject = (MavenProject) nbMavenProject.getMavenProject();
+        this.mavenProject = nbMavenProject.getMavenProject();
     }
 
     public Project getProject() {
@@ -113,7 +119,30 @@ public class MicroApplication {
     }
 
     public boolean isRunning() {
+//        runActionCount.getAndSet(calcRunningInstanceCount());
         return runActionCount.get() > 0;
+    }
+
+    private int calcRunningInstanceCount() {
+        System.out.println("calcRunningInstanceCount");
+        List<String> processIds = new ArrayList<>();
+        String executorFilter = "gav=" + mavenProject.getGroupId() + ":" + mavenProject.getArtifactId() + ":" + mavenProject.getVersion();
+        final Runtime re = Runtime.getRuntime();
+        try {
+            Process jpsProcess = re.exec("jps -v");
+            InputStream inputStream = jpsProcess.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (line.contains(executorFilter)) {
+                    String[] split = line.split(" ");
+                    processIds.add(split[0]);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return processIds.size();
     }
 
     public int getRunningInstanceCount() {

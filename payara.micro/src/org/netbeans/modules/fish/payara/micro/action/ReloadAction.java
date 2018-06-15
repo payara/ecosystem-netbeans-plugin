@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.maven.project.MavenProject;
 import org.netbeans.api.project.Project;
+import static org.netbeans.modules.fish.payara.micro.Constants.STOP_ACTION;
 import org.netbeans.modules.fish.payara.micro.project.MicroApplicationProvider;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunUtils;
@@ -105,9 +106,11 @@ public class ReloadAction {
 
     public void runMavenCommands() {
         RP.post(() -> {
-            NetbeansActionMapping mapping = getActionMapping();
+            String action = RunUtils.isCompileOnSaveEnabled(project)? EXPLODE_ACTION : COMPILE_EXPLODE_ACTION;
+            NetbeansActionMapping mapping = ActionToGoalUtils.getDefaultMapping(action, project);
             ModelRunConfig rc = new ModelRunConfig(project, mapping, mapping.getActionName(), null, Lookup.EMPTY, false);
             rc.setTaskDisplayName(TXT_Reload(mavenProject.getArtifactId()));
+            rc.getGoals().addAll(PayaraActionsProvider.getGoals(action));
             RunUtils.run(rc);
         });
     }
@@ -122,14 +125,6 @@ public class ReloadAction {
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
-        }
-    }
-
-    private NetbeansActionMapping getActionMapping() {
-        if (RunUtils.isCompileOnSaveEnabled(project)) {
-            return ActionToGoalUtils.getDefaultMapping(EXPLODE_ACTION, project);
-        } else {
-            return ActionToGoalUtils.getDefaultMapping(COMPILE_EXPLODE_ACTION, project);
         }
     }
 
