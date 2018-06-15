@@ -92,6 +92,8 @@ public enum PayaraVersion {
     PF_4_1_2_173 ((short) 4, (short) 1, (short) 2, (short) 0, (short) 17, (short) 3, (short) 0, PayaraVersion.PF_4_1_2_173_STR),
     /** Payara 4.1.2.174 */
     PF_4_1_2_174 ((short) 4, (short) 1, (short) 2, (short) 0, (short) 17, (short) 4, (short) 0, PayaraVersion.PF_4_1_2_174_STR),
+    /** Payara 4.1.2.181 */
+    PF_4_1_2_181 ((short) 4, (short) 1, (short) 2, (short) 0, (short) 18, (short) 1, (short) 0, PayaraVersion.PF_4_1_2_181_STR),
     /** Payara 5.181 */
     PF_5_181 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 1, (short) 0, PayaraVersion.PF_5_181_STR),
     /** Payara 5.182 */
@@ -159,6 +161,10 @@ public enum PayaraVersion {
     static final String PF_4_1_2_174_STR = "4.1.2.174";
     /** Additional <code>String</code> representations of 4.1.2.174 value. */
     static final String PF_4_1_2_174_STR_NEXT[] = {"4.1.2.174.0"};
+    /**  A <code>String</code> representation of PF_4_1_2_181 value. */
+    static final String PF_4_1_2_181_STR = "4.1.2.181";
+    /** Additional <code>String</code> representations of 4.1.2.181 value. */
+    static final String PF_4_1_2_181_STR_NEXT[] = {"4.1.2.181.0"};
     /**  A <code>String</code> representation of PF_5_181 value. */
     static final String PF_5_181_STR = "5.181";
     /** Additional <code>String</code> representations of 5.181 value. */
@@ -208,6 +214,7 @@ public enum PayaraVersion {
         initStringValuesMapFromArray(PF_4_1_2_172, PF_4_1_2_172_STR_NEXT);
         initStringValuesMapFromArray(PF_4_1_2_173, PF_4_1_2_173_STR_NEXT);
         initStringValuesMapFromArray(PF_4_1_2_174, PF_4_1_2_174_STR_NEXT);
+        initStringValuesMapFromArray(PF_4_1_2_181, PF_4_1_2_181_STR_NEXT);
         initStringValuesMapFromArray(PF_5_181, PF_5_181_STR_NEXT);
         initStringValuesMapFromArray(PF_5_182, PF_5_182_STR_NEXT);
     }

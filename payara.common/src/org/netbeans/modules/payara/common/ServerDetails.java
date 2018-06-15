@@ -183,13 +183,23 @@ public enum ServerDetails {
     ),
         
     /**
-     * details for an instance of Payara Server 5.0.0.173-SNAPSHOT
+     * details for an instance of Payara Server 4.1.2.174
      */
     PAYARA_SERVER_4_1_2_174(NbBundle.getMessage(ServerDetails.class,"STR_412174_SERVER_NAME", new Object[]{}), // NOI18N
         "deployer:pfv3ee6wc", // NOI18N
         412174,
         "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.174/payara-4.1.2.174.zip", // NOI18N
-        null 
+        null
+    ),
+
+    /**
+     * details for an instance of Payara Server 4.1.2.181
+     */
+    PAYARA_SERVER_4_1_2_181(NbBundle.getMessage(ServerDetails.class,"STR_412181_SERVER_NAME", new Object[]{}), // NOI18N
+        "deployer:pfv3ee6wc", // NOI18N
+        412181,
+        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip", // NOI18N
+        null
     ),
 
     /**
@@ -225,6 +235,7 @@ public enum ServerDetails {
                 new ServerDetails[]{
                     PAYARA_SERVER_5_182,
                     PAYARA_SERVER_5_181,
+                    PAYARA_SERVER_4_1_2_181,
                     PAYARA_SERVER_4_1_2_174,
                     PAYARA_SERVER_4_1_2_173,
                     PAYARA_SERVER_4_1_2_172,
@@ -241,6 +252,7 @@ public enum ServerDetails {
                 new ServerDetails[]{
                     PAYARA_SERVER_5_182,
                     PAYARA_SERVER_5_181,
+                    PAYARA_SERVER_4_1_2_181,
                     PAYARA_SERVER_4_1_2_174,
                     PAYARA_SERVER_4_1_2_173,
                     PAYARA_SERVER_4_1_2_172,
@@ -291,6 +303,8 @@ public enum ServerDetails {
                     return PAYARA_SERVER_4_1_2_173.getVersion();
                 case PF_4_1_2_174:
                     return PAYARA_SERVER_4_1_2_174.getVersion();
+                case PF_4_1_2_181:
+                    return PAYARA_SERVER_4_1_2_181.getVersion();
                 case PF_5_181:
                     return PAYARA_SERVER_5_181.getVersion();
                 case PF_5_182:

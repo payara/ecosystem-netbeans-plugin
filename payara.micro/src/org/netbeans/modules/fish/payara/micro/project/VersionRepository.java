@@ -54,6 +54,7 @@ public class VersionRepository {
     private VersionRepository() {
         MICRO_VERSIONS.add(new MicroVersion("5.182", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("5.181", "8.0"));
+        MICRO_VERSIONS.add(new MicroVersion("4.1.2.181", "7.0"));
         MICRO_VERSIONS.add(new MicroVersion("4.1.2.174", "7.0"));
     }
 
