@@ -69,11 +69,21 @@ public class Constants {
     public static final String PAYARA_MICRO_MAVEN_PLUGIN = "fish.payara.maven.plugins:payara-micro-maven-plugin";
 
     public static final String RELOAD_FILE = ".reload";
-
     public static final String COMMAND_EXPLODE = "explode";
+    
+    public static final String RESOURCES_GOAL = "resources:resources";
+    public static final String COMPILE_GOAL = "compiler:compile";
+    public static final String EXPLODED_GOAL = "war:exploded";
+    public static final String WAR_GOAL = "war:war";
+    public static final String STOP_GOAL = "payara-micro:stop";
+    public static final String START_GOAL = "payara-micro:start";
+
     public static final String COMPILE_EXPLODE_ACTION = "micro-complie-explode";
     public static final String EXPLODE_ACTION = "micro-explode";
-
+    public static final String STOP_ACTION = "micro-stop";
+    public static final String RUN_ACTION = ActionProvider.COMMAND_RUN;
+    public static final String DEBUG_ACTION = ActionProvider.COMMAND_DEBUG;
+    public static final String PROFILE_ACTION = ActionProvider.COMMAND_PROFILE;
     public static final String RUN_SINGLE_ACTION = ActionProvider.COMMAND_RUN_SINGLE + ".deploy";
     public static final String DEBUG_SINGLE_ACTION = ActionProvider.COMMAND_DEBUG_SINGLE + ".deploy";
     public static final String PROFILE_SINGLE_ACTION = ActionProvider.COMMAND_PROFILE_SINGLE + ".deploy";
