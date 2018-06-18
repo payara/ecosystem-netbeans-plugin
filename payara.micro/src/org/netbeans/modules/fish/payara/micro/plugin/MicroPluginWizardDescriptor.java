@@ -81,13 +81,13 @@ public final class MicroPluginWizardDescriptor implements WizardDescriptor.Insta
     @Override
     public Set instantiate() throws IOException {
         String payaraMicroVersion = (String) descriptor.getProperty(PROP_PAYARA_MICRO_VERSION);
-        String autoBindHTTP = (String) descriptor.getProperty(PROP_AUTO_BIND_HTTP);
+        String autoBindHttp = (String) descriptor.getProperty(PROP_AUTO_BIND_HTTP);
         
         Map<String, Object> params = new HashMap<>();
-        params.put("autoBindHttp", autoBindHTTP);
+        params.put("autoBindHttp", autoBindHttp);
         params.put("payaraMicroVersion", payaraMicroVersion);
         
-        try (Reader sourceReader = new InputStreamReader(loadResource("org/netbeans/modules/fish/payara/micro/plugin/resources/_pom.xml"))) {
+        try (Reader sourceReader = new InputStreamReader(loadResource("org/netbeans/modules/fish/payara/micro/plugin/resources/pom.xml.ftl"))) {
             try (Reader targetReader = new StringReader(expandTemplate(sourceReader, params))) {
                 POMManager pomManager = new POMManager(targetReader, project);
                 pomManager.commit();
