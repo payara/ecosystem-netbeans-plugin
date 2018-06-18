@@ -38,8 +38,6 @@
  */
 package org.netbeans.modules.fish.payara.micro.project;
 
-import org.netbeans.api.project.Project;
-
 /**
  *
  * @author Gaurav Gupta <gaurav.gupta@payara.fish>

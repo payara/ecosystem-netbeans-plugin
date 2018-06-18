@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
 import static java.util.stream.Collectors.toSet;
 import javax.swing.SwingUtilities;
 import javax.xml.namespace.QName;
@@ -83,6 +84,8 @@ public class POMManager {
     private List<ModelOperation<POMModel>> operations;
     
     private static final RequestProcessor RP = new RequestProcessor("Maven loading");
+
+    private BiFunction<Xpp3Dom, POMExtensibilityElement, Boolean> extensionOverrideFilter;
 
     public POMManager(Project project){
         this(project, false);
@@ -176,6 +179,10 @@ public class POMManager {
                 pomModel.endTransaction();
             }
         }
+    }
+
+    public void setExtensionOverrideFilter(BiFunction<Xpp3Dom, POMExtensibilityElement, Boolean> extensionOverrideFilter) {
+        this.extensionOverrideFilter = extensionOverrideFilter;
     }
 
     public static boolean isMavenProject(Project project) {
@@ -334,7 +341,9 @@ public class POMManager {
                 Optional<POMExtensibilityElement> targetElementOptioal = target.getExtensibilityElements()
                         .stream()
                         .filter(targetElement -> StringUtils.equals(targetElement.getQName().getLocalPart(), childDOM.getName()))
+                        .filter(targetElement -> extensionOverrideFilter == null || extensionOverrideFilter.apply(childDOM, targetElement))
                         .findAny();
+                
                 POMExtensibilityElement element;
                 if (targetElementOptioal.isPresent()) {
                     element = targetElementOptioal.get();

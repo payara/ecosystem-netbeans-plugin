@@ -59,6 +59,7 @@ import static org.netbeans.modules.fish.payara.micro.Constants.PROP_JAVA_EE_VERS
 import static org.netbeans.modules.fish.payara.micro.Constants.PROP_PACKAGE;
 import static org.netbeans.modules.fish.payara.micro.Constants.PROP_PAYARA_MICRO_VERSION;
 import static org.netbeans.modules.fish.payara.micro.Constants.PROP_VERSION;
+import static org.netbeans.modules.fish.payara.micro.plugin.MicroPluginWizardDescriptor.updateMicroMavenPlugin;
 import org.netbeans.modules.maven.api.archetype.Archetype;
 import org.netbeans.modules.maven.api.archetype.ArchetypeWizards;
 import org.netbeans.modules.maven.api.archetype.ProjectInfo;
@@ -92,12 +93,13 @@ public final class MicroProjectWizardIterator extends BaseWizardIterator {
                 (String) descriptor.getProperty(PROP_PACKAGE)
         );
         String payaraMicroVersion = (String) descriptor.getProperty(PROP_PAYARA_MICRO_VERSION);
+        String autoBindHttp = (String) descriptor.getProperty(PROP_AUTO_BIND_HTTP);
         Archetype archetype = createMojoArchetype();
 
         Map<String, String> properties = new HashMap<>();
         properties.put(PROP_PAYARA_MICRO_VERSION, payaraMicroVersion);
         properties.put(PROP_JAVA_EE_VERSION, VersionRepository.getInstance().getJavaEEVersion(payaraMicroVersion));
-        properties.put(PROP_AUTO_BIND_HTTP, (String) descriptor.getProperty(PROP_AUTO_BIND_HTTP));
+        properties.put(PROP_AUTO_BIND_HTTP, autoBindHttp);
 
         ArchetypeWizards.logUsage(archetype.getGroupId(), archetype.getArtifactId(), archetype.getVersion());
 
@@ -111,6 +113,7 @@ public final class MicroProjectWizardIterator extends BaseWizardIterator {
                 continue;
             }
             MavenProjectSupport.changeServer(project, true);
+            updateMicroMavenPlugin(project, payaraMicroVersion, autoBindHttp);
         }
 
         return projects;
@@ -121,7 +124,6 @@ public final class MicroProjectWizardIterator extends BaseWizardIterator {
         archetype.setGroupId(ARCHETYPE_GROUP_ID);
         archetype.setArtifactId(ARCHETYPE_ARTIFACT_ID);
         archetype.setVersion(ARCHETYPE_VERSION);
-//      archetype.setRepository(ARCHETYPE_REPOSITORY);
         return archetype;
     }
 

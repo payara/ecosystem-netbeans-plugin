@@ -16,19 +16,16 @@
             <plugin>
                 <groupId>fish.payara.maven.plugins</groupId>
                 <artifactId>payara-micro-maven-plugin</artifactId>
-                <version>1.0.1-SNAPSHOT</version>
+                <version>1.0.1</version>
                 <configuration>
                     <payaraVersion>${r"${version.payara.micro}"}</payaraVersion>
-                    <artifactItem>
-                        <groupId>fish.payara.extras</groupId>
-                        <artifactId>payara-micro</artifactId>
-                        <version>${r"${version.payara.micro}"}</version>
-                    </artifactItem>
+                    <deployWar>false</deployWar>
                     <commandLineOptions>
+<#if autoBindHttp == "true">
                         <option>
                             <key>--autoBindHttp</key>
-                            <value>${autoBindHttp}</value>
                         </option>
+</#if>
                         <option>
                             <key>--deploy</key>
                             <value>${r"${project.build.directory}"}/${r"${project.build.finalName}"}</value>
