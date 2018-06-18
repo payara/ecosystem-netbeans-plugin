@@ -121,7 +121,6 @@ public final class MicroProjectWizardIterator extends BaseWizardIterator {
         archetype.setGroupId(ARCHETYPE_GROUP_ID);
         archetype.setArtifactId(ARCHETYPE_ARTIFACT_ID);
         archetype.setVersion(ARCHETYPE_VERSION);
-//      archetype.setRepository(ARCHETYPE_REPOSITORY);
         return archetype;
     }
 
