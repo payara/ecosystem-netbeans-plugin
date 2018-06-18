@@ -19,14 +19,18 @@
                 <version>1.0.1</version>
                 <configuration>
                     <payaraVersion>${r"${version.payara.micro}"}</payaraVersion>
-                    <deployWar>true</deployWar>
-<#if autoBindHttp == "true">
+                    <deployWar>false</deployWar>
                     <commandLineOptions>
+<#if autoBindHttp == "true">
                         <option>
                             <key>--autoBindHttp</key>
                         </option>
-                    </commandLineOptions>
 </#if>
+                        <option>
+                            <key>--deploy</key>
+                            <value>${r"${project.build.directory}"}/${r"${project.build.finalName}"}</value>
+                        </option>
+                    </commandLineOptions>
                 </configuration>
             </plugin>
         </plugins>

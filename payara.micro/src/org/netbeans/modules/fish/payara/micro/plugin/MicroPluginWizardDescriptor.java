@@ -38,6 +38,7 @@ import static org.netbeans.modules.fish.payara.micro.TemplateUtil.loadResource;
 import org.netbeans.modules.fish.payara.micro.project.ProjectHookImpl;
 import org.netbeans.modules.fish.payara.micro.project.ui.PayaraMicroDescriptor;
 import org.netbeans.modules.maven.NbMavenProjectImpl;
+import org.netbeans.modules.maven.model.pom.POMExtensibilityElement;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.util.NbBundle;
@@ -58,6 +59,30 @@ public final class MicroPluginWizardDescriptor implements WizardDescriptor.Insta
     private Project project;
 
     private List<WizardDescriptor.Panel<WizardDescriptor>> panels;
+    
+    public static void updateMicroMavenPlugin(Project project, String payaraMicroVersion, String autoBindHttp) throws IOException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("autoBindHttp", autoBindHttp);
+        params.put("payaraMicroVersion", payaraMicroVersion);
+
+        try (Reader sourceReader = new InputStreamReader(loadResource("org/netbeans/modules/fish/payara/micro/plugin/resources/pom.xml.ftl"))) {
+            try (Reader targetReader = new StringReader(expandTemplate(sourceReader, params))) {
+                POMManager pomManager = new POMManager(targetReader, project);
+                pomManager.setExtensionOverrideFilter((source, target) -> {
+                    if ("option".equalsIgnoreCase(source.getName())) {
+                        for (POMExtensibilityElement element : target.getExtensibilityElements()) {
+                            if ("key".equals(element.getQName().getLocalPart())) {
+                                return source.getChild("key").getValue().equals(element.getElementText());
+                            }
+                        }
+                    }
+                    return true;
+                });
+                pomManager.commit();
+                pomManager.reload();
+            }
+        }
+    }
 
     @Override
     public void initialize(WizardDescriptor descriptor) {
@@ -83,21 +108,11 @@ public final class MicroPluginWizardDescriptor implements WizardDescriptor.Insta
         String payaraMicroVersion = (String) descriptor.getProperty(PROP_PAYARA_MICRO_VERSION);
         String autoBindHttp = (String) descriptor.getProperty(PROP_AUTO_BIND_HTTP);
         
-        Map<String, Object> params = new HashMap<>();
-        params.put("autoBindHttp", autoBindHttp);
-        params.put("payaraMicroVersion", payaraMicroVersion);
+        updateMicroMavenPlugin(project, payaraMicroVersion, autoBindHttp);
         
-        try (Reader sourceReader = new InputStreamReader(loadResource("org/netbeans/modules/fish/payara/micro/plugin/resources/pom.xml.ftl"))) {
-            try (Reader targetReader = new StringReader(expandTemplate(sourceReader, params))) {
-                POMManager pomManager = new POMManager(targetReader, project);
-                pomManager.commit();
-                pomManager.reload();
-                
-                ProjectHookImpl projectHookImpl = new ProjectHookImpl(project);
-                projectHookImpl.initMicroProject(true);
-                project.getLookup().lookup(NbMavenProjectImpl.class).fireProjectReload();
-            }        
-        }
+        ProjectHookImpl projectHookImpl = new ProjectHookImpl(project);
+        projectHookImpl.initMicroProject(true);
+        project.getLookup().lookup(NbMavenProjectImpl.class).fireProjectReload();
         return Collections.emptySet();
     }
 
