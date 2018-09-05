@@ -8,7 +8,7 @@
     <packaging>war</packaging>
 
     <properties>
-        <version.payara.micro>${payaraMicroVersion}</version.payara.micro>
+        <version.payara>${payaraMicroVersion}</version.payara>
     </properties>
 
     <build>
@@ -18,7 +18,7 @@
                 <artifactId>payara-micro-maven-plugin</artifactId>
                 <version>1.0.1</version>
                 <configuration>
-                    <payaraVersion>${r"${version.payara.micro}"}</payaraVersion>
+                    <payaraVersion>${r"${version.payara}"}</payaraVersion>
                     <deployWar>false</deployWar>
                     <commandLineOptions>
 <#if autoBindHttp == "true">

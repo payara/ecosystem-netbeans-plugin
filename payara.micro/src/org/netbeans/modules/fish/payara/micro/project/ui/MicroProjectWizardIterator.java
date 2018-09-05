@@ -40,7 +40,6 @@ package org.netbeans.modules.fish.payara.micro.project.ui;
 
 import static org.netbeans.modules.fish.payara.micro.Constants.ARCHETYPE_ARTIFACT_ID;
 import static org.netbeans.modules.fish.payara.micro.Constants.ARCHETYPE_GROUP_ID;
-import static org.netbeans.modules.fish.payara.micro.Constants.ARCHETYPE_VERSION;
 import org.netbeans.modules.fish.payara.micro.project.VersionRepository;
 import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.template_PayaraMicroApp;
 import java.io.File;
@@ -123,7 +122,8 @@ public final class MicroProjectWizardIterator extends BaseWizardIterator {
         Archetype archetype = new Archetype();
         archetype.setGroupId(ARCHETYPE_GROUP_ID);
         archetype.setArtifactId(ARCHETYPE_ARTIFACT_ID);
-        archetype.setVersion(ARCHETYPE_VERSION);
+        // archetype.setVersion(ARCHETYPE_VERSION);  
+        // latest version of archetype automatically fetched from remote catalog
         return archetype;
     }
 

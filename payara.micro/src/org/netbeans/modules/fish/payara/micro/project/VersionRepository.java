@@ -52,6 +52,7 @@ public class VersionRepository {
     private static final List<MicroVersion> MICRO_VERSIONS = new ArrayList<>();
 
     private VersionRepository() {
+        MICRO_VERSIONS.add(new MicroVersion("5.183", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("5.182", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("5.181", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("4.1.2.181", "7.0"));

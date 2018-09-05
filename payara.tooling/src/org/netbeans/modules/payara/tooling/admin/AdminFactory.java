@@ -99,6 +99,7 @@ public abstract class AdminFactory {
             case PF_4_1_2_181:
             case PF_5_181:
             case PF_5_182:
+            case PF_5_183:
                 return AdminFactoryRest.getInstance();
             // Anything else is not unknown.
             default:
