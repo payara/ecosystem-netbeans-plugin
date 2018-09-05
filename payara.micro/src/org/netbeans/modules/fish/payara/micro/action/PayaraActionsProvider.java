@@ -125,7 +125,7 @@ public class PayaraActionsProvider implements MavenActionsProvider {// extends A
         String microVersionText = pref.get(VERSION, "");
         RunConfig config = abstractMavenActionsProvider.createConfigForDefaultAction(actionName, project, lookup);
         if(!microVersionText.isEmpty()){
-            config.setProperty("version.payara.micro", microVersionText);
+            config.setProperty("version.payara", microVersionText);
         }
         config.getGoals().addAll(getGoals(actionName));
         return config;

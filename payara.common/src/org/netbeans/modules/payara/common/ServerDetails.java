@@ -39,7 +39,7 @@
  *
  * Portions Copyrighted 2010 Sun Microsystems, Inc.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common;
 
@@ -65,161 +65,155 @@ public enum ServerDetails {
     /**
      * details for an instance of Payara Server 4.1.144
      */
-    PAYARA_SERVER_4_1_144(NbBundle.getMessage(ServerDetails.class,"STR_41144_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        41144,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.144/payara.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_144(NbBundle.getMessage(ServerDetails.class, "STR_41144_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            41144,
+            "https://github.com/payara/Payara/releases/download/payara-server-4.1.144/payara.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.151
      */
-    PAYARA_SERVER_4_1_151(NbBundle.getMessage(ServerDetails.class,"STR_41151_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        41151,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.151/payara-4.1.151.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_151(NbBundle.getMessage(ServerDetails.class, "STR_41151_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            41151,
+            "https://github.com/payara/Payara/releases/download/payara-server-4.1.151/payara-4.1.151.zip", // NOI18N
+            null
     ),
-        
     /**
      * details for an instance of Payara Server 4.1.152
      */
-    PAYARA_SERVER_4_1_152(NbBundle.getMessage(ServerDetails.class,"STR_41152_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        41152,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.152/payara-4.1.152.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_152(NbBundle.getMessage(ServerDetails.class, "STR_41152_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            41152,
+            "https://github.com/payara/Payara/releases/download/payara-server-4.1.152/payara-4.1.152.zip", // NOI18N
+            null
     ),
-    
     /**
      * details for an instance of Payara Server 4.1.153
      */
-    PAYARA_SERVER_4_1_153(NbBundle.getMessage(ServerDetails.class,"STR_41153_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        41153,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.153/payara-4.1.153.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_153(NbBundle.getMessage(ServerDetails.class, "STR_41153_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            41153,
+            "https://github.com/payara/Payara/releases/download/payara-server-4.1.153/payara-4.1.153.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.1.154
      */
-    PAYARA_SERVER_4_1_1_154(NbBundle.getMessage(ServerDetails.class,"STR_411154_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        411154,
-        "hhttps://github.com/payara/Payara/releases/download/payara-server-4.1.1.154/payara-4.1.1.154.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_1_154(NbBundle.getMessage(ServerDetails.class, "STR_411154_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            411154,
+            "hhttps://github.com/payara/Payara/releases/download/payara-server-4.1.1.154/payara-4.1.1.154.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.1.161
      */
-    PAYARA_SERVER_4_1_1_161(NbBundle.getMessage(ServerDetails.class,"STR_411161_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        411161,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.1.161/payara-4.1.1.161.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_1_161(NbBundle.getMessage(ServerDetails.class, "STR_411161_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            411161,
+            "https://github.com/payara/Payara/releases/download/payara-server-4.1.1.161/payara-4.1.1.161.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.1.162
      */
-    PAYARA_SERVER_4_1_1_162(NbBundle.getMessage(ServerDetails.class,"STR_411162_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        411162,
-        "https://github.com/payara/Payara/releases/download/payara-server-4.1.1.162/payara-4.1.1.162.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_1_162(NbBundle.getMessage(ServerDetails.class, "STR_411162_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            411162,
+            "https://github.com/payara/Payara/releases/download/payara-server-4.1.1.162/payara-4.1.1.162.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.1.163
      */
-    PAYARA_SERVER_4_1_1_163(NbBundle.getMessage(ServerDetails.class,"STR_411163_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        411163,
-        "https://github.com/payara/Payara/releases/download/4.1.1.163/payara-4.1.1.163.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_1_163(NbBundle.getMessage(ServerDetails.class, "STR_411163_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            411163,
+            "https://github.com/payara/Payara/releases/download/4.1.1.163/payara-4.1.1.163.zip", // NOI18N
+            null
     ),
-    
     /**
      * details for an instance of Payara Server 4.1.1.164
      */
-    PAYARA_SERVER_4_1_1_164(NbBundle.getMessage(ServerDetails.class,"STR_411164_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        411164,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.1.164/payara-4.1.1.164.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_1_164(NbBundle.getMessage(ServerDetails.class, "STR_411164_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            411164,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.1.164/payara-4.1.1.164.zip", // NOI18N
+            null
     ),
-    
     /**
      * details for an instance of Payara Server 4.1.1.171
      */
-    PAYARA_SERVER_4_1_1_171(NbBundle.getMessage(ServerDetails.class,"STR_411171_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        411171,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.1.171/payara-4.1.1.171.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_1_171(NbBundle.getMessage(ServerDetails.class, "STR_411171_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            411171,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.1.171/payara-4.1.1.171.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.2.172
      */
-    PAYARA_SERVER_4_1_2_172(NbBundle.getMessage(ServerDetails.class,"STR_412172_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        412172,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.172/payara-4.1.2.172.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_2_172(NbBundle.getMessage(ServerDetails.class, "STR_412172_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            412172,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.172/payara-4.1.2.172.zip", // NOI18N
+            null
     ),
-        
     /**
      * details for an instance of Payara Server 4.1.2.173
      */
-    PAYARA_SERVER_4_1_2_173(NbBundle.getMessage(ServerDetails.class,"STR_412173_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        412173,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.173/payara-4.1.2.173.zip", // NOI18N
-        null 
+    PAYARA_SERVER_4_1_2_173(NbBundle.getMessage(ServerDetails.class, "STR_412173_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            412173,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.173/payara-4.1.2.173.zip", // NOI18N
+            null
     ),
-        
     /**
      * details for an instance of Payara Server 4.1.2.174
      */
-    PAYARA_SERVER_4_1_2_174(NbBundle.getMessage(ServerDetails.class,"STR_412174_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        412174,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.174/payara-4.1.2.174.zip", // NOI18N
-        null
+    PAYARA_SERVER_4_1_2_174(NbBundle.getMessage(ServerDetails.class, "STR_412174_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            412174,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.174/payara-4.1.2.174.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 4.1.2.181
      */
-    PAYARA_SERVER_4_1_2_181(NbBundle.getMessage(ServerDetails.class,"STR_412181_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        412181,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip", // NOI18N
-        null
+    PAYARA_SERVER_4_1_2_181(NbBundle.getMessage(ServerDetails.class, "STR_412181_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            412181,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 5.181
      */
-    PAYARA_SERVER_5_181(NbBundle.getMessage(ServerDetails.class,"STR_5181_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        5181,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.181/payara-5.181.zip", // NOI18N
-        null 
+    PAYARA_SERVER_5_181(NbBundle.getMessage(ServerDetails.class, "STR_5181_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            5181,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.181/payara-5.181.zip", // NOI18N
+            null
     ),
-
     /**
      * details for an instance of Payara Server 5.182
      */
-    PAYARA_SERVER_5_182(NbBundle.getMessage(ServerDetails.class,"STR_5182_SERVER_NAME", new Object[]{}), // NOI18N
-        "deployer:pfv3ee6wc", // NOI18N
-        5182,
-        "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.182/payara-5.182.zip", // NOI18N
-        null 
+    PAYARA_SERVER_5_182(NbBundle.getMessage(ServerDetails.class, "STR_5182_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            5182,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.182/payara-5.182.zip", // NOI18N
+            null
+    ),
+    /**
+     * details for an instance of Payara Server 5.183
+     */
+    PAYARA_SERVER_5_183(NbBundle.getMessage(ServerDetails.class, "STR_5183_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            5183,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.183/payara-5.183.zip", // NOI18N
+            null
     );
 
     /**
@@ -233,6 +227,7 @@ public enum ServerDetails {
         return new ServerWizardIterator(
                 //add new version
                 new ServerDetails[]{
+                    PAYARA_SERVER_5_183,
                     PAYARA_SERVER_5_182,
                     PAYARA_SERVER_5_181,
                     PAYARA_SERVER_4_1_2_181,
@@ -250,6 +245,7 @@ public enum ServerDetails {
                     PAYARA_SERVER_4_1_151,
                     PAYARA_SERVER_4_1_144},
                 new ServerDetails[]{
+                    PAYARA_SERVER_5_183,
                     PAYARA_SERVER_5_182,
                     PAYARA_SERVER_5_181,
                     PAYARA_SERVER_4_1_2_181,
@@ -309,6 +305,8 @@ public enum ServerDetails {
                     return PAYARA_SERVER_5_181.getVersion();
                 case PF_5_182:
                     return PAYARA_SERVER_5_182.getVersion();
+                case PF_5_183:
+                    return PAYARA_SERVER_5_183.getVersion();
                 default:
                     return -1;
             }
@@ -331,7 +329,7 @@ public enum ServerDetails {
         if (null == domainXml || !domainXml.isFile() || !domainXml.canRead()) {
             return -1;
         }
-        return hasDefaultConfig(domainXml) ? PAYARA_SERVER_5_182.getVersion() : PAYARA_SERVER_5_181.getVersion();
+        return hasDefaultConfig(domainXml) ? PAYARA_SERVER_5_183.getVersion() : PAYARA_SERVER_5_181.getVersion();
     }
 
     private static boolean hasDefaultConfig(File domainXml) throws IllegalStateException {
@@ -342,13 +340,12 @@ public enum ServerDetails {
         return dp.hasDefaultConfig();
     }
     
-    private String displayName;
-    private String uriFragment;
-    private String indirectUrl;
-    private String directUrl;
-    private int versionInt;
+    private final String displayName;
+    private final String uriFragment;
+    private final String indirectUrl;
+    private final String directUrl;
+    private final int versionInt;
     
-
     ServerDetails(String displayName, String uriFragment, int versionInt,
             String directUrl, String indirectUrl) {
             this.displayName = displayName;

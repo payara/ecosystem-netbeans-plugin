@@ -37,7 +37,7 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.data;
 
@@ -97,8 +97,10 @@ public enum PayaraVersion {
     /** Payara 5.181 */
     PF_5_181 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 1, (short) 0, PayaraVersion.PF_5_181_STR),
     /** Payara 5.182 */
-    PF_5_182 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 2, (short) 0, PayaraVersion.PF_5_182_STR);
-    
+    PF_5_182 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 2, (short) 0, PayaraVersion.PF_5_182_STR),
+    /** Payara 5.183 */
+    PF_5_183 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 3, (short) 0, PayaraVersion.PF_5_183_STR);
+
     //add new version
     /**  A <code>String</code> representation of GF_3 value. */
     static final String GF_3_STR = "3";
@@ -173,6 +175,10 @@ public enum PayaraVersion {
     static final String PF_5_182_STR = "5.182";
     /** Additional <code>String</code> representations of 5.182 value. */
     static final String PF_5_182_STR_NEXT[] = {"5.182.0"};
+    /**  A <code>String</code> representation of PF_5_183 value. */
+    static final String PF_5_183_STR = "5.183";
+    /** Additional <code>String</code> representations of 5.183 value. */
+    static final String PF_5_183_STR_NEXT[] = {"5.183.0"};
   
     ////////////////////////////////////////////////////////////////////////////
     // Class attributes                                                       //
@@ -217,6 +223,7 @@ public enum PayaraVersion {
         initStringValuesMapFromArray(PF_4_1_2_181, PF_4_1_2_181_STR_NEXT);
         initStringValuesMapFromArray(PF_5_181, PF_5_181_STR_NEXT);
         initStringValuesMapFromArray(PF_5_182, PF_5_182_STR_NEXT);
+        initStringValuesMapFromArray(PF_5_183, PF_5_183_STR_NEXT);
     }
     
 
