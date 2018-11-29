@@ -64,29 +64,42 @@ import org.openide.filesystems.FileUtil;
  */
 public abstract class J2eeModuleHelper {
 
-    /** Web application meta data directory. */
+    /**
+     * Web application meta data directory.
+     */
     public static final String WEB_INF = JavaEEModule.WEB_INF;
 
-    /** GlassFish specific meta data file for version 1 and 2. */
+    /**
+     * GlassFish specific meta data file for version 1 and 2.
+     */
     public static final String GF_WEB_XML_V1
             = WEB_INF + File.separatorChar + "sun-web.xml";
 
-    /** Payara specific meta data file for version 3 and 4. */
+    /**
+     * GlassFish specific meta data file for version 3 and 4.
+     */
     public static final String GF_WEB_XML_V2
             = WEB_INF + File.separatorChar + "glassfish-web.xml";
+
+    /**
+     * Payara specific meta data file.
+     */
+    public static final String PAYARA_WEB_XML_V4
+            = WEB_INF + File.separatorChar + "payara-web.xml";
 
     private static final Map<Object, J2eeModuleHelper> helperMap;
     private static final Map<Object, J2eeModuleHelper> gfhelperMap;
 
     static {
-        Map<Object, J2eeModuleHelper> map = new HashMap<Object, J2eeModuleHelper>();
+        Map<Object, J2eeModuleHelper> map;
+        map = new HashMap<>();
         map.put(J2eeModule.Type.WAR, new WebDDHelper());
         map.put(J2eeModule.Type.EJB, new EjbDDHelper());
         map.put(J2eeModule.Type.EAR, new EarDDHelper());
         map.put(J2eeModule.Type.CAR, new ClientDDHelper());
         helperMap = Collections.unmodifiableMap(map);
-        map = new HashMap<Object, J2eeModuleHelper>();
-        map.put(J2eeModule.Type.WAR, new WebDDHelper(GF_WEB_XML_V2, null));
+        map = new HashMap<>();
+        map.put(J2eeModule.Type.WAR, new WebDDHelper(PAYARA_WEB_XML_V4, GF_WEB_XML_V2));
         map.put(J2eeModule.Type.EJB, new EjbDDHelper("META-INF/glassfish-ejb-jar.xml", "META-INF/glassfish-cmp-mappings.xml"));
         map.put(J2eeModule.Type.EAR, new EarDDHelper("META-INF/glassfish-application.xml", null));
         map.put(J2eeModule.Type.CAR, new ClientDDHelper("META-INF/glassfish-application-client.xml",null));
@@ -94,14 +107,15 @@ public abstract class J2eeModuleHelper {
     }
 
     /**
-     * Check for <code>WEB-INF/glassfish-web.xml</code> in Java EE module.
-     * <p/>
+     * Check for <code>WEB-INF/payara-web.xml</code> in Java EE module.
+     * 
+     * @param module
      * @return Value of <code>true</code> when
-     * <code>WEB-INF/glassfish-web.xml</code> exists and is readable
+     * <code>WEB-INF/payara-web.xml</code> exists and is readable
      * or <code>false</code> otherwise.
      */
     public static boolean isPayaraWeb(final J2eeModule module) {
-         File webXml = module.getDeploymentConfigurationFile(GF_WEB_XML_V2);
+         File webXml = module.getDeploymentConfigurationFile(PAYARA_WEB_XML_V4);
          return webXml.canRead();
     }
 
@@ -113,22 +127,27 @@ public abstract class J2eeModuleHelper {
         return gfhelperMap.get(type);
     }
 
-    public static final J2eeModuleHelper getWsModuleHelper(String primarySunDDName) {
-        return new WebServerDDHelper(primarySunDDName);
+    public static final J2eeModuleHelper getWsModuleHelper(String primaryDDName) {
+        return new WebServerDDHelper(primaryDDName);
     }
 
     private final Object moduleType;
     private final String standardDDName;
     private final String webserviceDDName;
-    private final String primarySunDDName;
-    private final String secondarySunDDName;
+    private final String primaryDDName;
+    private final String secondaryDDName;
 
-    private J2eeModuleHelper(Object type, String stdDD, String wsDD, String sunDD, String cmpDD) {
-        moduleType = type;
-        standardDDName = stdDD;
-        webserviceDDName = wsDD;
-        primarySunDDName = sunDD;
-        secondarySunDDName = cmpDD;
+    private J2eeModuleHelper(
+            Object moduleType,
+            String standardDDName,
+            String webserviceDDName,
+            String primaryDDName,
+            String secondaryDDName) {
+        this.moduleType = moduleType;
+        this.standardDDName = standardDDName;
+        this.webserviceDDName = webserviceDDName;
+        this.primaryDDName = primaryDDName;
+        this.secondaryDDName = secondaryDDName;
     }
 
     public Object getJ2eeModule() {
@@ -143,22 +162,22 @@ public abstract class J2eeModuleHelper {
         return webserviceDDName;
     }
 
-    public String getPrimarySunDDName() {
-        return primarySunDDName;
+    public String getPrimaryDDName() {
+        return primaryDDName;
     }
 
-    public String getSecondarySunDDName() {
-        return secondarySunDDName;
+    public String getSecondaryDDName() {
+        return secondaryDDName;
     }
 
-    public File getPrimarySunDDFile(J2eeModule module) {
-        return primarySunDDName != null ? 
-            module.getDeploymentConfigurationFile(primarySunDDName) : null;
+    public File getPrimaryDDFile(J2eeModule module) {
+        return primaryDDName != null ? 
+            module.getDeploymentConfigurationFile(primaryDDName) : null;
     }
 
-    public File getSecondarySunDDFile(J2eeModule module) {
-        return secondarySunDDName != null ?
-            module.getDeploymentConfigurationFile(secondarySunDDName) : null;
+    public File getSecondaryDDFile(J2eeModule module) {
+        return secondaryDDName != null ?
+            module.getDeploymentConfigurationFile(secondaryDDName) : null;
     }
 
     public RootInterface getStandardRootDD(J2eeModule module) {
@@ -232,9 +251,9 @@ public abstract class J2eeModuleHelper {
 
     public static class WebServerDDHelper extends J2eeModuleHelper {
 
-        private WebServerDDHelper(String primarySunDDName) {
+        private WebServerDDHelper(String primaryDDName) {
             super(J2eeModule.WAR, J2eeModule.WEB_XML, J2eeModule.WEBSERVICES_XML,
-                    primarySunDDName, null);
+                    primaryDDName, null);
         }
 
         @Override

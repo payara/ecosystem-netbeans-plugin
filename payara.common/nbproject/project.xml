@@ -236,7 +236,6 @@
             </module-dependencies>
             <friend-packages>
                 <friend>org.netbeans.modules.glassfish.grails</friend>
-                <friend>org.netbeans.modules.payara.javaee</friend>
                 <friend>org.netbeans.modules.glassfish.jruby</friend>
                 <friend>org.netbeans.modules.glassfish.phobos</friend>
                 <friend>org.netbeans.modules.j2ee.sun.appsrv</friend>
@@ -244,15 +243,15 @@
                 <friend>org.netbeans.modules.j2ee.sun.ddui</friend>
                 <friend>org.netbeans.modules.jbi.fuji.server.gfsupport</friend>
                 <friend>org.netbeans.modules.jbi.fuji.server.plugin</friend>
-                <friend>org.netbeans.modules.web.kit</friend>
-                <!-- Temporary for 7.3.1/7.4 -->
+                <friend>org.netbeans.modules.payara.eecommon</friend>
+                <friend>org.netbeans.modules.payara.javaee</friend>
                 <friend>org.netbeans.modules.payara.javaee.verifier</friend>
-                <package>org.netbeans.modules.payara.spi</package>
-                <!-- Temporary for 7.3.1/7.4 -->
+                <friend>org.netbeans.modules.web.kit</friend>
                 <package>org.netbeans.modules.payara.common</package>
                 <package>org.netbeans.modules.payara.common.parser</package>
                 <package>org.netbeans.modules.payara.common.ui</package>
                 <package>org.netbeans.modules.payara.common.utils</package>
+                <package>org.netbeans.modules.payara.spi</package>
             </friend-packages>
         </data>
     </configuration>

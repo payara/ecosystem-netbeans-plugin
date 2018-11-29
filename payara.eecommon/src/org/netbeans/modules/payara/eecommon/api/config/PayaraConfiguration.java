@@ -54,6 +54,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
+import org.netbeans.modules.j2ee.dd.api.webservices.Webservices;
 import org.netbeans.modules.payara.eecommon.api.Utils;
 import org.netbeans.modules.payara.eecommon.api.XmlFileCreator;
 import org.netbeans.modules.payara.tooling.data.PayaraVersion;
@@ -73,6 +74,7 @@ import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.sun.dd.api.ASDDVersion;
 import org.netbeans.modules.j2ee.sun.dd.api.CommonDDBean;
 import org.netbeans.modules.j2ee.sun.dd.api.DDProvider;
+import org.netbeans.modules.payara.eecommon.dd.loader.PayaraDDProvider;
 import org.netbeans.modules.j2ee.sun.dd.api.RootInterface;
 import org.netbeans.modules.j2ee.sun.dd.api.client.SunApplicationClient;
 import org.netbeans.modules.j2ee.sun.dd.api.common.EjbRef;
@@ -267,8 +269,8 @@ public abstract class PayaraConfiguration implements
 
     protected final J2eeModule module;
     protected final J2eeModuleHelper moduleHelper;
-    protected final File primarySunDD;
-    protected final File secondarySunDD;
+    protected final File primaryDD;
+    protected final File secondaryDD;
     protected DescriptorListener descriptorListener;
     /** Payara server version. */
     protected PayaraVersion version;
@@ -316,24 +318,24 @@ public abstract class PayaraConfiguration implements
         this.moduleHelper = moduleHelper;
         this.version = version;
         if(moduleHelper != null) {
-            this.primarySunDD = moduleHelper.getPrimarySunDDFile(module);
-            this.secondarySunDD = moduleHelper.getSecondarySunDDFile(module);
+            this.primaryDD = moduleHelper.getPrimaryDDFile(module);
+            this.secondaryDD = moduleHelper.getSecondaryDDFile(module);
         } else {
             throw new ConfigurationException("Unsupported module type: " + module.getType()); // NOI18N
         }
 
-        if (null == primarySunDD) {
-            throw new ConfigurationException("No primarySunDD for module type: " + module.getType()); // NOI18N
+        if (null == primaryDD) {
+            throw new ConfigurationException("No primaryDD for module type: " + module.getType()); // NOI18N
         }
 
         try {
 
-            if (null == primarySunDD.getParentFile()) {
+            if (null == primaryDD.getParentFile()) {
                 throw new ConfigurationException("module is not initialized completely");  // NOI18N
             }
-            addConfiguration(primarySunDD, this);
-            if (primarySunDD.getName().endsWith("-web.xml")) { // NOI18N
-                String path = primarySunDD.getParent().
+            addConfiguration(primaryDD, this);
+            if (primaryDD.getName().endsWith("-web.xml")) { // NOI18N
+                String path = primaryDD.getParent().
                         replaceAll("[\\\\/]web[\\\\/]WEB-INF", "").   // NOI18N
                         replaceAll("[\\\\/]src[\\\\/]main[\\\\/]webapp[\\\\/]WEB-INF", "");  // NOI18N
                 int dex = path.lastIndexOf(File.separatorChar);
@@ -363,38 +365,12 @@ public abstract class PayaraConfiguration implements
                     (J2EEVersion.J2EE_1_4.compareSpecification(j2eeVersion) >= 0) : false;
             boolean isPreJavaEE6 = (j2eeVersion != null) ?
                     (J2EEVersion.JAVAEE_5_0.compareSpecification(j2eeVersion) >= 0) : false;
-            if (!primarySunDD.exists() && isPreJavaEE6) {
-                // If module is J2EE 1.4 (or 1.3), or this is a web app (where we have
-                // a default property even for JavaEE5), then copy the default template.
-                if (J2eeModule.Type.WAR.equals(mt) || isPreJavaEE5) {
-                    createDefaultSunDD(primarySunDD);
-                }
+            if (isPreJavaEE5 || isPreJavaEE6) {
+               // not supported
             }
-
-            if(isPreJavaEE5) {
-                // Create standard descriptor listener holder
-                descriptorListener = new DescriptorListener(this);
-
-                // Attach folder listener to config folder (primarily to monitor for webservices.xml
-                // if it does not exist yet.)
-                File configDir = primarySunDD.getParentFile();
-                FileObject configFolder = FileUtil.toFileObject(configDir);
-                if(configFolder != null) {
-                    FolderListener.createListener(primarySunDD, configFolder, mt);
-                }
-
-                // Attach listeners to the standard descriptors to handle automatic
-                // jndi-name and endpoint assignment.
-                addDescriptorListener(getStandardRootDD());
-                addDescriptorListener(getWebServicesRootDD());
-            }
-        } catch (IOException ioe) {
-            removeConfiguration(primarySunDD);
-            ConfigurationException ce = new ConfigurationException(primarySunDD.getAbsolutePath(), ioe);
-            throw ce;
         } catch (RuntimeException ex) {
-            removeConfiguration(primarySunDD);
-            ConfigurationException ce = new ConfigurationException(primarySunDD.getAbsolutePath(), ex);
+            removeConfiguration(primaryDD);
+            ConfigurationException ce = new ConfigurationException(primaryDD.getAbsolutePath(), ex);
             throw ce;
         }
       
@@ -415,7 +391,7 @@ public abstract class PayaraConfiguration implements
             descriptorListener = null;
         }
 
-        PayaraConfiguration storedCfg = getConfiguration(primarySunDD);
+        PayaraConfiguration storedCfg = getConfiguration(primaryDD);
         if (storedCfg != this) {
             LOGGER.log(Level.INFO, 
                     "Stored DeploymentConfiguration ({0}) instance not the one being disposed of ({1}).",
@@ -423,7 +399,7 @@ public abstract class PayaraConfiguration implements
         }
 
         if (storedCfg != null) {
-            removeConfiguration(primarySunDD);
+            removeConfiguration(primaryDD);
         }
     }
 
@@ -440,7 +416,7 @@ public abstract class PayaraConfiguration implements
         // target server, use that, otherwise, use 9.0.
         ASDDVersion result = getTargetAppServerVersion();
         if (result == null) {
-            if (primarySunDD.getName().startsWith("glassfish-"))
+            if (primaryDD.getName().startsWith("glassfish-"))
                 result = ASDDVersion.SUN_APPSERVER_10_1;
             else
                 result = ASDDVersion.SUN_APPSERVER_10_0;
@@ -532,7 +508,7 @@ public abstract class PayaraConfiguration implements
 
     protected ASDDVersion getTargetAppServerVersion() {
         ASDDVersion result = null;
-        J2eeModuleProvider provider = getProvider(primarySunDD.getParentFile());
+        J2eeModuleProvider provider = getProvider(primaryDD.getParentFile());
         if (null == provider) {
             return result;
         }
@@ -574,6 +550,9 @@ public abstract class PayaraConfiguration implements
     static ASDDVersion getInstalledAppServerVersionFromDirectory(File asInstallFolder) {
         File dtdFolder = new File(asInstallFolder, "lib/dtds/"); // NOI18N
         if (dtdFolder.exists()) {
+            if (new File(dtdFolder, "payara-web-app_4.dtd").exists()) {
+                return ASDDVersion.SUN_APPSERVER_10_1;
+            }
             if (new File(dtdFolder, "glassfish-web-app_3_0-1.dtd").exists()) {
                 return ASDDVersion.SUN_APPSERVER_10_1;
             }
@@ -629,8 +608,8 @@ public abstract class PayaraConfiguration implements
         return stdRootDD;
     }
 
-    final public org.netbeans.modules.j2ee.dd.api.webservices.Webservices getWebServicesRootDD() {
-        org.netbeans.modules.j2ee.dd.api.webservices.Webservices wsRootDD = null;
+    final public Webservices getWebServicesRootDD() {
+        Webservices wsRootDD = null;
         J2eeModuleHelper j2eeModuleHelper = J2eeModuleHelper.getSunDDModuleHelper(module.getType());
         if(j2eeModuleHelper != null) {
             wsRootDD = j2eeModuleHelper.getWebServicesRootDD(module);
@@ -683,11 +662,11 @@ public abstract class PayaraConfiguration implements
 
     void updateDefaultEjbJndiName(final String ejbName, final String prefix, final ChangeOperation op) {
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, op == ChangeOperation.CREATE);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, op == ChangeOperation.CREATE);
 
-            if(primarySunDDFO != null) {
+            if(primaryDDFO != null) {
                 boolean changed = false;
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 if (sunDDRoot instanceof SunEjbJar) {
                     SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                     EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -726,7 +705,7 @@ public abstract class PayaraConfiguration implements
                 }
 
                 if(changed) {
-                    sunDDRoot.write(primarySunDDFO);
+                    sunDDRoot.write(primaryDDFO);
                 }
             }
         } catch(IOException ex) {
@@ -741,11 +720,11 @@ public abstract class PayaraConfiguration implements
      */
     void updateDefaultEjbEndpointUri(final String linkName, final String portName, final ChangeOperation op) {
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
 
-            if(primarySunDDFO != null) {
+            if(primaryDDFO != null) {
                 boolean changed = false;
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 if (sunDDRoot instanceof SunEjbJar) {
                     SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                     EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -799,7 +778,7 @@ public abstract class PayaraConfiguration implements
                 }
 
                 if(changed) {
-                    sunDDRoot.write(primarySunDDFO);
+                    sunDDRoot.write(primaryDDFO);
                 }
             }
         } catch(IOException ex) {
@@ -822,7 +801,7 @@ public abstract class PayaraConfiguration implements
         String contextRoot = defaultcr;
         if (J2eeModule.Type.WAR.equals(module.getType())) {
             try {
-                RootInterface rootDD = getSunDDRoot(false);
+                RootInterface rootDD = getPayaraDDRoot(false);
                 if (rootDD instanceof SunWebApp) {
                     // read the value of CR out of the DD file.
                     contextRoot = ((SunWebApp) rootDD).getContextRoot();
@@ -854,7 +833,7 @@ public abstract class PayaraConfiguration implements
             if (J2eeModule.Type.WAR.equals(module.getType())) {
                 if (null != defaultcr && defaultcr.equals(contextRoot)) {
                     // remove the context-root entry from the DD file... if it exists
-                    final FileObject sunDDFO = getSunDD(primarySunDD, false);
+                    final FileObject sunDDFO = getPayaraDD(primaryDD, false);
                     if (null != sunDDFO) {
                         // remove the context-root element from the file
                         RP.post(new Runnable() {
@@ -863,7 +842,7 @@ public abstract class PayaraConfiguration implements
                             public void run() {
                                 try {
                                     if (sunDDFO != null) {
-                                        RootInterface rootDD = DDProvider.getDefault().getDDRoot(sunDDFO);
+                                        RootInterface rootDD = PayaraDDProvider.getDefault().getDDRoot(sunDDFO);
                                         if (rootDD instanceof SunWebApp) {
                                             SunWebApp swa = (SunWebApp) rootDD;
                                             swa.setContextRoot(null);
@@ -884,14 +863,14 @@ public abstract class PayaraConfiguration implements
                     }
                 } else {
                     // create the DD file and set the value of the context-root element
-                    final FileObject sunDDFO = getSunDD(primarySunDD, true);
+                    final FileObject sunDDFO = getPayaraDD(primaryDD, true);
                     RP.post(new Runnable() {
 
                         @Override
                         public void run() {
                             try {
                                 if (sunDDFO != null) {
-                                    RootInterface rootDD = DDProvider.getDefault().getDDRoot(sunDDFO);
+                                    RootInterface rootDD = PayaraDDProvider.getDefault().getDDRoot(sunDDFO);
                                     if (rootDD instanceof SunWebApp) {
                                         SunWebApp swa = (SunWebApp) rootDD;
                                         if (contextRoot == null || contextRoot.trim().length() == 0) {
@@ -947,9 +926,9 @@ public abstract class PayaraConfiguration implements
         }
 
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 ResourceRef ref = findNamedBean(sunDDRoot, referenceName, SunWebApp.RESOURCE_REF, ResourceRef.RES_REF_NAME);
                 if (ref != null) {
                     // set jndi name of existing reference.
@@ -970,7 +949,7 @@ public abstract class PayaraConfiguration implements
                 }
 
                 // if changes, save file.
-                sunDDRoot.write(primarySunDDFO);
+                sunDDRoot.write(primaryDDFO);
             }
         } catch (IOException ex) {
             // This is a legitimate exception that could occur, such as a problem
@@ -998,9 +977,9 @@ public abstract class PayaraConfiguration implements
         }
 
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 if (sunDDRoot instanceof SunEjbJar) {
                     SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                     EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -1030,7 +1009,7 @@ public abstract class PayaraConfiguration implements
                     }
 
                     // if changes, save file.
-                    sunEjbJar.write(primarySunDDFO);
+                    sunEjbJar.write(primaryDDFO);
                 }
             }
         } catch (IOException ex) {
@@ -1058,7 +1037,7 @@ public abstract class PayaraConfiguration implements
 
         String jndiName = null;
         try {
-            RootInterface sunDDRoot = getSunDDRoot(false);
+            RootInterface sunDDRoot = getPayaraDDRoot(false);
             ResourceRef ref = findNamedBean(sunDDRoot, referenceName, SunWebApp.RESOURCE_REF, ResourceRef.RES_REF_NAME);
             if (ref != null) {
                 // get jndi name of existing reference.
@@ -1091,7 +1070,7 @@ public abstract class PayaraConfiguration implements
 
         String jndiName = null;
         try {
-            RootInterface sunDDRoot = getSunDDRoot(false);
+            RootInterface sunDDRoot = getPayaraDDRoot(false);
             if (sunDDRoot instanceof SunEjbJar) {
                 SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                 EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -1138,7 +1117,7 @@ public abstract class PayaraConfiguration implements
 
         String jndiName = null;
         try {
-            RootInterface sunDDRoot = getSunDDRoot(false);
+            RootInterface sunDDRoot = getPayaraDDRoot(false);
             if (sunDDRoot instanceof SunEjbJar) {
                 SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                 EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -1192,9 +1171,9 @@ public abstract class PayaraConfiguration implements
         }
 
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 EjbRef ref = findNamedBean(sunDDRoot, referenceName, SunWebApp.EJB_REF, EjbRef.EJB_REF_NAME);
                 if (ref != null) {
                     // set jndi name of existing reference.
@@ -1215,7 +1194,7 @@ public abstract class PayaraConfiguration implements
                 }
 
                 // if changes, save file.
-                sunDDRoot.write(primarySunDDFO);
+                sunDDRoot.write(primaryDDFO);
             }
         } catch (IOException ex) {
             // This is a legitimate exception that could occur, such as a problem
@@ -1253,9 +1232,9 @@ public abstract class PayaraConfiguration implements
         }
 
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 if (sunDDRoot instanceof SunEjbJar) {
                     SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                     EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -1285,7 +1264,7 @@ public abstract class PayaraConfiguration implements
                     }
 
                     // if changes, save file.
-                    sunEjbJar.write(primarySunDDFO);
+                    sunEjbJar.write(primaryDDFO);
                 }
             }
         } catch (IOException ex) {
@@ -1326,9 +1305,9 @@ public abstract class PayaraConfiguration implements
         }
 
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 if (sunDDRoot instanceof SunEjbJar) {
                     SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                     EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -1359,7 +1338,7 @@ public abstract class PayaraConfiguration implements
 //                        eb.addMessageDestination(destination);
 //                    }
                     // if changes, save file.
-                    sunDDRoot.write(primarySunDDFO);
+                    sunDDRoot.write(primaryDDFO);
                 }
             }
         } catch (IOException ex) {
@@ -1387,7 +1366,7 @@ public abstract class PayaraConfiguration implements
 
         String destinationName = null;
         try {
-            RootInterface sunDDRoot = getSunDDRoot(false);
+            RootInterface sunDDRoot = getPayaraDDRoot(false);
             if(sunDDRoot instanceof SunEjbJar) {
                 SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                 EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
@@ -1425,9 +1404,9 @@ public abstract class PayaraConfiguration implements
         }
 
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 MessageDestinationRef destRef = findNamedBean(sunDDRoot, referenceName,
                         SunWebApp.MESSAGE_DESTINATION_REF, MessageDestinationRef.MESSAGE_DESTINATION_REF_NAME);
                 if (destRef != null) {
@@ -1469,7 +1448,7 @@ public abstract class PayaraConfiguration implements
                 }
 
                 // if changes, save file.
-                sunDDRoot.write(primarySunDDFO);
+                sunDDRoot.write(primaryDDFO);
             }
         } catch (IOException ex) {
             // This is a legitimate exception that could occur, such as a problem
@@ -1491,9 +1470,9 @@ public abstract class PayaraConfiguration implements
     public void bindMessageDestinationReferenceForEjb(String ejbName, String ejbType, String referenceName,
             String connectionFactoryName, String destName, Type type) throws ConfigurationException {
         try {
-            FileObject primarySunDDFO = getSunDD(primarySunDD, true);
-            if (primarySunDDFO != null) {
-                RootInterface sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+            FileObject primaryDDFO = getPayaraDD(primaryDD, true);
+            if (primaryDDFO != null) {
+                RootInterface sunDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
                 SunEjbJar sunEjbJar = (SunEjbJar) sunDDRoot;
                 EnterpriseBeans eb = sunEjbJar.getEnterpriseBeans();
                 if (eb == null) {
@@ -1549,7 +1528,7 @@ public abstract class PayaraConfiguration implements
                     }
                 }
                 // if changes, save file.
-                sunDDRoot.write(primarySunDDFO);
+                sunDDRoot.write(primaryDDFO);
             }
         } catch (IOException ex) {
             // This is a legitimate exception that could occur, such as a problem
@@ -1578,9 +1557,9 @@ public abstract class PayaraConfiguration implements
         try {
             if (this.module.getType().equals(J2eeModule.Type.WAR)) {
                 // copy sun-web.xml to stream directly.
-                FileObject configFO = FileUtil.toFileObject(primarySunDD);
+                FileObject configFO = FileUtil.toFileObject(primaryDD);
                 if(configFO != null) {
-                    RootInterface rootDD = DDProvider.getDefault().getDDRoot(configFO);
+                    RootInterface rootDD = PayaraDDProvider.getDefault().getDDRoot(configFO);
                     rootDD.write(outputStream);
                 }
             } else {
@@ -1603,33 +1582,38 @@ public abstract class PayaraConfiguration implements
     // This method is only useful for reading the model.  If the model is to
     // be modified and rewritten to disk, you'll need the FileObject it was
     // retrieved from as well.
-    protected RootInterface getSunDDRoot(boolean create) throws IOException {
-        RootInterface sunDDRoot = null;
-        FileObject primarySunDDFO = getSunDD(primarySunDD, create);
-        if (primarySunDDFO != null) {
-            sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+    protected RootInterface getPayaraDDRoot(boolean create) throws IOException {
+        RootInterface payaraDDRoot = null;
+        FileObject primaryDDFO = getPayaraDD(primaryDD, create);
+        if (primaryDDFO != null) {
+            payaraDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
+        } else {
+            FileObject secondaryDDFO = getPayaraDD(secondaryDD, create);
+            if (secondaryDDFO != null) {
+                payaraDDRoot = DDProvider.getDefault().getDDRoot(secondaryDDFO);
+            }
         }
-        return sunDDRoot;
+        return payaraDDRoot;
     }
 
-    public RootInterface getSunDDRoot(File sunDD, boolean create) throws IOException {
-        RootInterface sunDDRoot = null;
-        FileObject primarySunDDFO = getSunDD(sunDD, create);
-        if (primarySunDDFO != null) {
-            sunDDRoot = DDProvider.getDefault().getDDRoot(primarySunDDFO);
+    public RootInterface getPayaraDDRoot(File payaraDD, boolean create) throws IOException {
+        RootInterface payaraDDRoot = null;
+        FileObject primaryDDFO = getPayaraDD(payaraDD, create);
+        if (primaryDDFO != null) {
+            payaraDDRoot = PayaraDDProvider.getDefault().getDDRoot(primaryDDFO);
         }
-        return sunDDRoot;
+        return payaraDDRoot;
     }
 
-    protected FileObject getSunDD(File sunDDFile, boolean create) throws IOException {
-        if (!sunDDFile.exists()) {
+    protected FileObject getPayaraDD(File payaraDDFile, boolean create) throws IOException {
+        if (!payaraDDFile.exists()) {
             if (create) {
-                createDefaultSunDD(sunDDFile);
+                createDefaultSunDD(payaraDDFile);
             } else {
                 return null;
             }
         }
-        return FileUtil.toFileObject(sunDDFile);
+        return FileUtil.toFileObject(payaraDDFile);
     }
 
     protected void displayError(Exception ex, String defaultMessage) {

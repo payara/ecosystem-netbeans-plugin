@@ -95,6 +95,7 @@ Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
                 <!-- -->
                 <folder name="DeploymentFileNames">
                     <folder name="WAR">
+                        <file name="WEB-INF\payara-web.xml"/> 
                         <file name="WEB-INF\sun-web.xml"/> 
                         <file name="WEB-INF\glassfish-web.xml"/>
                         <file name="WEB-INF\glassfish-resources.xml"/>
