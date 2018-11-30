@@ -37,8 +37,7 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
-
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 package org.netbeans.modules.payara.tooling.server.parser;
 
 import java.util.ArrayList;
@@ -46,14 +45,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.netbeans.modules.payara.tooling.server.JDK;
 import org.netbeans.modules.payara.tooling.server.parser.TreeParser.NodeListener;
 import org.netbeans.modules.payara.tooling.server.parser.TreeParser.Path;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-
-public class JvmConfigReader extends NodeListener implements
-        XMLReader {
+public class JvmConfigReader extends NodeListener implements XMLReader {
 
     private static String JVM_OPTIONS_TAG = "jvm-options";
 
@@ -61,7 +63,7 @@ public class JvmConfigReader extends NodeListener implements
     /**
      * Holds all values found in <jvm-options> tags
      */
-    private ArrayList<String> optList = new ArrayList<>();
+    private List<JvmOption> jvmOptions = new ArrayList<>();
     /**
      * Holds all key-value pairs representing attributes of jvm-config tag.
      * These are used for computing the classpath.
@@ -106,8 +108,9 @@ public class JvmConfigReader extends NodeListener implements
 
             @Override
             public void endNode(String qname) throws SAXException {
-                if ("config".equals(qname))
+                if ("config".equals(qname)) {
                     readConfig = false;
+                }
             }
         };
     }
@@ -133,8 +136,9 @@ public class JvmConfigReader extends NodeListener implements
                 String name = attributes.getLocalName(i);
                 // seems that sometimes from uknown reasons
                 // getLocalName returns empty string...
-                if ((name == null) || name.isEmpty())
+                if ((name == null) || name.isEmpty()) {
                     name = attributes.getQName(i);
+                }
                 String value = attributes.getValue(i);
                 if (name != null && name.length() > 0 && value != null && value.length() > 0) {
                     propMap.put(name, value);
@@ -142,7 +146,6 @@ public class JvmConfigReader extends NodeListener implements
             }
         }
     }
-    
 
     @Override
     public void readCData(String qname, char[] ch, int start, int length) throws SAXException {
@@ -156,12 +159,10 @@ public class JvmConfigReader extends NodeListener implements
     @Override
     public void endNode(String qname) throws SAXException {
         if (readConfig && JVM_OPTIONS_TAG.equals(qname)) {
-            optList.add(b.toString());
+            jvmOptions.add(new JvmOption(b.toString()));
             b.delete(0, b.length());
         }
     }
-    
-    
 
     public TreeParser.NodeListener getMonitoringFinder() {
         return new TreeParser.NodeListener() {
@@ -206,9 +207,9 @@ public class JvmConfigReader extends NodeListener implements
         paths.add(new Path("/domain/configs/config/monitoring-service", getMonitoringFinder()));
         return paths;
     }
-    
-    public List<String> getOptList() {
-        return optList;
+
+    public List<JvmOption> getJvmOptions() {
+        return jvmOptions;
     }
 
     public Map<String, String> getPropMap() {
@@ -218,4 +219,78 @@ public class JvmConfigReader extends NodeListener implements
     public boolean isMonitoringEnabled() {
         return isMonitoringEnabled;
     }
+
+    public static class JvmOption {
+
+        public final String option;
+        public final Optional<JDK.Version> minVersion;
+        public final Optional<JDK.Version> maxVersion;
+
+        // splits the versioned JVM option pattern into three groups:
+        //     Gr1  Gr2 Gr3
+        //      <>  <>  <------------>
+        // Ex: [1.7|1.8]-XX:MyJvmOption (both min and max version present)
+        // Below examples have missing verisions, with is also OK
+        // Ex: [|1.8]-XX:MyJvmOption (only max version present)
+        // Ex: [1.7|]-XX:MyJvmOption (only min version present)
+        // Gr1 or Gr2 can be null (optional)
+        private static final Pattern PATTERN = Pattern.compile("^\\[(.*)\\|(.*)\\](.*)");
+
+        public JvmOption(String option) {
+            Matcher matcher = PATTERN.matcher(option);
+            if (matcher.matches()) {
+                this.minVersion = Optional.ofNullable(JDK.getVersion(matcher.group(1)));
+                this.maxVersion = Optional.ofNullable(JDK.getVersion(matcher.group(2)));
+                this.option = matcher.group(3);
+            } else {
+                this.option = option;
+                this.minVersion = Optional.empty();
+                this.maxVersion = Optional.empty();
+            }
+        }
+
+        public JvmOption(String option, String minVersion, String maxVersion) {
+            this.option = option;
+            this.minVersion = Optional.ofNullable(JDK.getVersion(minVersion));
+            this.maxVersion = Optional.ofNullable(JDK.getVersion(maxVersion));
+        }
+
+        public static boolean hasVersionPattern(String option) {
+            return PATTERN.matcher(option).matches();
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 79 * hash + Objects.hashCode(this.option);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final JvmOption other = (JvmOption) obj;
+            if (!Objects.equals(this.option, other.option)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public String toString() {
+            if (!minVersion.isPresent() && !maxVersion.isPresent()) {
+                return option;
+            }
+            return String.format("[%s|%s]%s", minVersion.isPresent() ? minVersion.get() : "", maxVersion.isPresent() ? maxVersion.get() : "", option);
+        }
+    }
+
 }

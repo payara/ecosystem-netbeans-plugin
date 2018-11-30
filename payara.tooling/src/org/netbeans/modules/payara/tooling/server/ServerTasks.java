@@ -37,7 +37,7 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.server;
 
@@ -47,6 +47,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
+import static java.util.stream.Collectors.toList;
 import org.netbeans.modules.payara.tooling.PayaraIdeException;
 import org.netbeans.modules.payara.tooling.admin.CommandStartDAS;
 import org.netbeans.modules.payara.tooling.admin.ResultProcess;
@@ -60,6 +61,7 @@ import org.netbeans.modules.payara.tooling.utils.OsUtils;
 import org.netbeans.modules.payara.tooling.utils.ServerUtils;
 import org.netbeans.modules.payara.tooling.utils.Utils;
 import org.netbeans.modules.payara.tooling.data.PayaraServer;
+import org.netbeans.modules.payara.tooling.server.parser.JvmConfigReader.JvmOption;
 
 /**
  * This class should contain task methods for GF server.
@@ -117,18 +119,18 @@ public class ServerTasks {
      */
     private static void addJavaAgent(PayaraServer server,
             JvmConfigReader jvmConfigReader) {
-        List<String> optList = jvmConfigReader.getOptList();
+        List<JvmOption> optList = jvmConfigReader.getJvmOptions();
         File serverHome = new File(server.getServerHome());
         File btrace = new File(serverHome, "lib/monitor/btrace-agent.jar");
         File flight = new File(serverHome, "lib/monitor/flashlight-agent.jar");
         if (jvmConfigReader.isMonitoringEnabled()) {
             if (btrace.exists()) {
-                optList.add("-javaagent:" + Utils.
+                optList.add(new JvmOption("-javaagent:" + Utils.
                         quote(btrace.getAbsolutePath())
-                        + "=unsafe=true,noServer=true"); // NOI18N
+                        + "=unsafe=true,noServer=true")); // NOI18N
             } else if (flight.exists()) {
-                optList.add("-javaagent:"
-                        + Utils.quote(flight.getAbsolutePath()));
+                optList.add(new JvmOption("-javaagent:"
+                        + Utils.quote(flight.getAbsolutePath())));
             }
         }
     }
@@ -182,7 +184,13 @@ public class ServerTasks {
                         METHOD, "readXMLerror"), domainXmlPath);
             }
         }
-        List<String> optList = jvmConfigReader.getOptList();
+        List<String> optList
+                = jvmConfigReader.getJvmOptions()
+                        .stream()
+                        .filter(fullOption -> JDK.isCorrectJDK(fullOption.minVersion, fullOption.maxVersion))
+                        .map(fullOption -> fullOption.option)
+                        .collect(toList());
+
         Map<String, String> propMap = jvmConfigReader.getPropMap();
         addJavaAgent(server, jvmConfigReader);
         // try to find bootstraping jar - usually glassfish.jar
