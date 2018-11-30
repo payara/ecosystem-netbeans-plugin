@@ -1547,8 +1547,7 @@ public class PayaraInstance implements ServerInstanceImplementation,
                 DEFAULT_ADMIN_PORT);
         updateString(properties, PayaraModule.SESSION_PRESERVATION_FLAG,
                 "true");
-        updateString(properties, PayaraModule.START_DERBY_FLAG,
-                isRemote ? "false" : "true");
+        updateString(properties, PayaraModule.START_DERBY_FLAG, "false");
         updateString(properties, PayaraModule.USE_IDE_PROXY_FLAG, "true");
         updateString(properties, PayaraModule.DRIVER_DEPLOY_FLAG, "true");
         updateString(properties, PayaraModule.HTTPHOST_ATTR, "localhost");
