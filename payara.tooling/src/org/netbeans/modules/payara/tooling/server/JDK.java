@@ -110,7 +110,7 @@ public final class JDK {
                 } else if (equals(minor, version.minor)) {
                     if (greaterThan(subminor, version.subminor)) {
                         return true;
-                    } else if (subminor == version.subminor) {
+                    } else if (equals(subminor, version.subminor)) {
                         if (greaterThan(update, version.update)) {
                             return true;
                         }
