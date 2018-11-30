@@ -214,6 +214,15 @@ public enum ServerDetails {
             5183,
             "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.183/payara-5.183.zip", // NOI18N
             null
+    ),
+    /**
+     * details for an instance of Payara Server 5.184
+     */
+    PAYARA_SERVER_5_184(NbBundle.getMessage(ServerDetails.class, "STR_5184_SERVER_NAME", new Object[]{}), // NOI18N
+            "deployer:pfv3ee6wc", // NOI18N
+            5184,
+            "https://oss.sonatype.org/service/local/repositories/releases/content/fish/payara/distributions/payara/5.184/payara-5.184.zip", // NOI18N
+            null
     );
 
     /**
@@ -227,6 +236,7 @@ public enum ServerDetails {
         return new ServerWizardIterator(
                 //add new version
                 new ServerDetails[]{
+                    PAYARA_SERVER_5_184,
                     PAYARA_SERVER_5_183,
                     PAYARA_SERVER_5_182,
                     PAYARA_SERVER_5_181,
@@ -243,8 +253,10 @@ public enum ServerDetails {
                     PAYARA_SERVER_4_1_153,
                     PAYARA_SERVER_4_1_152,
                     PAYARA_SERVER_4_1_151,
-                    PAYARA_SERVER_4_1_144},
+                    PAYARA_SERVER_4_1_144
+                },
                 new ServerDetails[]{
+                    PAYARA_SERVER_5_184,
                     PAYARA_SERVER_5_183,
                     PAYARA_SERVER_5_182,
                     PAYARA_SERVER_5_181,
@@ -256,7 +268,8 @@ public enum ServerDetails {
                     PAYARA_SERVER_4_1_1_164,
                     PAYARA_SERVER_4_1_1_163,
                     PAYARA_SERVER_4_1_1_162,
-                    PAYARA_SERVER_4_1_1_161}
+                    PAYARA_SERVER_4_1_1_161
+                }
         );
         
     }
@@ -307,6 +320,8 @@ public enum ServerDetails {
                     return PAYARA_SERVER_5_182.getVersion();
                 case PF_5_183:
                     return PAYARA_SERVER_5_183.getVersion();
+                case PF_5_184:
+                    return PAYARA_SERVER_5_184.getVersion();
                 default:
                     return -1;
             }
@@ -329,12 +344,12 @@ public enum ServerDetails {
         if (null == domainXml || !domainXml.isFile() || !domainXml.canRead()) {
             return -1;
         }
-        return hasDefaultConfig(domainXml) ? PAYARA_SERVER_5_183.getVersion() : PAYARA_SERVER_5_181.getVersion();
+        return hasDefaultConfig(domainXml) ? PAYARA_SERVER_5_184.getVersion() : PAYARA_SERVER_5_181.getVersion();
     }
 
     private static boolean hasDefaultConfig(File domainXml) throws IllegalStateException {
         DomainParser dp = new DomainParser();
-        List<TreeParser.Path> paths = new ArrayList<TreeParser.Path>();
+        List<TreeParser.Path> paths = new ArrayList<>();
         paths.add(new TreeParser.Path("/domain/configs/config",dp)); // NOI18N
         TreeParser.readXml(domainXml, paths);
         return dp.hasDefaultConfig();

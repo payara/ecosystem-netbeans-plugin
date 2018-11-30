@@ -46,7 +46,6 @@ import java.util.Locale;
 import java.util.Map;
 import org.netbeans.api.annotations.common.CheckForNull;
 import org.netbeans.api.annotations.common.NonNull;
-import org.netbeans.modules.payara.tooling.logging.Logger;
 import org.netbeans.modules.payara.tooling.utils.EnumUtils;
 import org.openide.util.Parameters;
 
@@ -99,7 +98,9 @@ public enum PayaraVersion {
     /** Payara 5.182 */
     PF_5_182 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 2, (short) 0, PayaraVersion.PF_5_182_STR),
     /** Payara 5.183 */
-    PF_5_183 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 3, (short) 0, PayaraVersion.PF_5_183_STR);
+    PF_5_183 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 3, (short) 0, PayaraVersion.PF_5_183_STR),
+    /** Payara 5.184 */
+    PF_5_184 ((short) 5, (short) 0, (short) 0, (short) 0, (short) 18, (short) 4, (short) 0, PayaraVersion.PF_5_184_STR);
 
     //add new version
     /**  A <code>String</code> representation of GF_3 value. */
@@ -179,6 +180,10 @@ public enum PayaraVersion {
     static final String PF_5_183_STR = "5.183";
     /** Additional <code>String</code> representations of 5.183 value. */
     static final String PF_5_183_STR_NEXT[] = {"5.183.0"};
+    /**  A <code>String</code> representation of PF_5_184 value. */
+    static final String PF_5_184_STR = "5.184";
+    /** Additional <code>String</code> representations of 5.184 value. */
+    static final String PF_5_184_STR_NEXT[] = {"5.184.0"};
   
     ////////////////////////////////////////////////////////////////////////////
     // Class attributes                                                       //
@@ -224,6 +229,7 @@ public enum PayaraVersion {
         initStringValuesMapFromArray(PF_5_181, PF_5_181_STR_NEXT);
         initStringValuesMapFromArray(PF_5_182, PF_5_182_STR_NEXT);
         initStringValuesMapFromArray(PF_5_183, PF_5_183_STR_NEXT);
+        initStringValuesMapFromArray(PF_5_184, PF_5_184_STR_NEXT);
     }
     
 
