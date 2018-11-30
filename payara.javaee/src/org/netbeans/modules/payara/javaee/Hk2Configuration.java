@@ -170,7 +170,7 @@ public class Hk2Configuration extends PayaraConfiguration implements DeploymentC
     }
 
     @Override
-    protected FileObject getSunDD(File sunDDFile, boolean create) throws IOException {
+    protected FileObject getPayaraDD(File sunDDFile, boolean create) throws IOException {
         if (!sunDDFile.exists()) {
             if (create) {
                 createDefaultSunDD(sunDDFile);

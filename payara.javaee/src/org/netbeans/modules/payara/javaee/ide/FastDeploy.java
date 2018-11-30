@@ -41,7 +41,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.javaee.ide;
 
@@ -167,9 +167,11 @@ public class FastDeploy extends IncrementalDeployment implements IncrementalDepl
                 String SUNWEB = "WEB-INF/sun-web.xml";  // NOI18N
                 if (url.contains("pfv3ee6wc")) { // NOI18N
                     String GFWEB = "WEB-INF/glassfish-web.xml"; // NOI18N
-                    if (null == rootOfWebApp.getFileObject(GFWEB) && 
-                            null == rootOfWebApp.getFileObject(SUNWEB)) {
-                        // add pf-sun to deployed app
+                    String PYWEB = "WEB-INF/payara-web.xml"; // NOI18N
+                    if (null != rootOfWebApp.getFileObject(GFWEB)) {
+                        fileName = PYWEB;
+                    } else if (null == rootOfWebApp.getFileObject(GFWEB)
+                            && null == rootOfWebApp.getFileObject(SUNWEB)) {
                         fileName = GFWEB;
                     }
                 } else {
@@ -179,8 +181,8 @@ public class FastDeploy extends IncrementalDeployment implements IncrementalDepl
                     }
                 }
                 if (null != fileName) {
-                    File sunDDFile = new File(dir, fileName);
-                    addDescriptorToDeployedDirectory(module, sunDDFile);                    
+                    File ddFile = new File(dir, fileName);
+                    addDescriptorToDeployedDirectory(module, ddFile);
                 }
             }
         // Context root is in encapsulated WAR

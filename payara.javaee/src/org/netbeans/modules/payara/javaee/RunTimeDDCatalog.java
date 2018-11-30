@@ -151,7 +151,8 @@ public class RunTimeDDCatalog extends GrammarQueryManager implements CatalogRead
         "-//Sun Microsystems, Inc.//DTD GlassFish Application Server 3.0 Servlet 3.0//EN"                         , "sun-web-app_3_0-0.dtd" ,
         "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN"                         , "glassfish-web-app_3_0-1.dtd" ,
         "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions //EN", "glassfish-resources_1_5.dtd",
-        "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN", "glassfish-resources_1_5.dtd"
+        "-//GlassFish.org//DTD GlassFish Application Server 3.1 Resource Definitions//EN", "glassfish-resources_1_5.dtd",
+        "-//Payara.fish//DTD Payara Server 4 Servlet 3.0//EN", "payara-web-app_4.dtd"
     };
 
         /*******NetBeans 3.6 is NOT ready yet to support schemas for code completion... What a pity!:        */
