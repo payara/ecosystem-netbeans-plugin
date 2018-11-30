@@ -187,10 +187,7 @@ public class ServerTasks {
         List<String> optList
                 = jvmConfigReader.getJvmOptions()
                         .stream()
-                        .filter(fullOption -> {
-                            System.out.println("");
-                            return JDK.isCorrectJDK(fullOption.minVersion, fullOption.maxVersion);
-                                })
+                        .filter(fullOption -> JDK.isCorrectJDK(fullOption.minVersion, fullOption.maxVersion))
                         .map(fullOption -> fullOption.option)
                         .collect(toList());
 
