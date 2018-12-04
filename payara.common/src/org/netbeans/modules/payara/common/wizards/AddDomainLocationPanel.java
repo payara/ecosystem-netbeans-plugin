@@ -41,7 +41,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common.wizards;
 
@@ -79,10 +79,10 @@ public class AddDomainLocationPanel implements WizardDescriptor.Panel, ChangeLis
     private final String PROP_WARNING_MESSAGE = WizardDescriptor.PROP_WARNING_MESSAGE;
     private final String PROP_INFO_MESSAGE = WizardDescriptor.PROP_INFO_MESSAGE;
 
-    private ServerWizardIterator wizardIterator;
+    private final ServerWizardIterator wizardIterator;
     private AddDomainLocationVisualPanel component;
     private WizardDescriptor wizard;
-    private transient List<ChangeListener> listeners
+    private final transient List<ChangeListener> listeners
             = new CopyOnWriteArrayList<>();
     private String gfRoot;
 
@@ -98,7 +98,7 @@ public class AddDomainLocationPanel implements WizardDescriptor.Panel, ChangeLis
         wizard = null;
     }
 
-    private AtomicBoolean isValidating = new AtomicBoolean();
+    private final AtomicBoolean isValidating = new AtomicBoolean();
 
     /**
      * 
@@ -222,6 +222,14 @@ public class AddDomainLocationPanel implements WizardDescriptor.Panel, ChangeLis
         wizardIterator.setTargetValue(panel.getTargetValue());
         wizardIterator.setUserName(panel.getUserNameValue());
         wizardIterator.setPassword(panel.getPasswordValue());
+        try {
+            wizardIterator.setAdminPort(Integer.parseInt(panel.getAdminPortValue()));
+        } catch(java.lang.NumberFormatException nfe) {
+        }
+        try {
+            wizardIterator.setHttpPort(Integer.parseInt(panel.getHttpPortValue()));
+        } catch(java.lang.NumberFormatException nfe) {
+        }
     }
 
     private String validateLocalHost(final Object rawHost) {
@@ -281,6 +289,27 @@ public class AddDomainLocationPanel implements WizardDescriptor.Panel, ChangeLis
             return true;
         } else {
             panel.setPortsFields(false);
+            List<String> errors = new LinkedList<>();
+            int dasPort = strToInt(panel.getAdminPortValue(),
+                    "AddDomainLocationPanel.invalidDasPort", errors);
+            int httpPort = strToInt(panel.getHttpPortValue(),
+                    "AddDomainLocationPanel.invalidHttpPort", errors);
+            if (dasPort < 0 || httpPort < 0) {
+                if(errors.isEmpty()) {
+                    if (dasPort < 0){
+                       errors.add(NbBundle.getMessage(this.getClass(), "AddDomainLocationPanel.invalidDasPort", dasPort));
+                    }
+                    if (httpPort < 0){
+                       errors.add(NbBundle.getMessage(this.getClass(), "AddDomainLocationPanel.invalidHttpPort", httpPort));
+                    }
+                }
+                wizard.putProperty(PROP_ERROR_MESSAGE, joinErrorMessages(errors));
+                return false;
+            }
+            if (dasPort == httpPort) {
+                wizard.putProperty(PROP_ERROR_MESSAGE, NbBundle.getMessage(this.getClass(), "AddDomainLocationPanel.duplicatePortAssigned", httpPort));
+                return false;
+            }
         }
         File domainsDir = domainDirCandidate.getParentFile();
         if (Utils.canWrite(domainsDir) && dex < 0 && !ServerUtilities.isTP2(gfRoot) &&

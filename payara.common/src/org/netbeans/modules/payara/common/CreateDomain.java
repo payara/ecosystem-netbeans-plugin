@@ -39,7 +39,7 @@
  * 
  * Portions Copyrighted 2008 Sun Microsystems, Inc.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common;
 
@@ -48,8 +48,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import static java.util.Arrays.asList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.logging.Logger;
@@ -73,48 +76,59 @@ import org.netbeans.modules.payara.spi.PayaraModule;
 public class CreateDomain extends Thread {
 
     static final String PORTBASE = "portbase"; // NOI18N
-    final private String uname;
-    final private String pword;
-    final private File platformLocation;
-    final private Map<String, String> map;
-    final private Map<String, String> ip;
-    private PayaraInstanceProvider gip;
-    private boolean register;
+    private final String uname;
+    private final String pword;
+    private final File platformLocation;
+    private final Map<String, String> map;
+    private final Map<String, String> instanceProperties;
+    private final PayaraInstanceProvider instanceProvider;
+    private final boolean register;
     private final String installRootKey;
 
     public CreateDomain(String uname, String pword, File platformLocation, 
-            Map<String, String> ip, PayaraInstanceProvider gip, boolean register,
+            Map<String, String> instanceProperties, PayaraInstanceProvider instanceProvider, boolean register,
             boolean useDefaultPorts, String installRootKey) {
         this.uname = uname;
         this.pword = pword;
         this.platformLocation = platformLocation;
-        this.ip = ip;
-        this.map = new HashMap<String,String>();
-        this.gip = gip;
-        map.putAll(ip);
+        this.instanceProperties = instanceProperties;
+        this.map = new HashMap<>();
+        this.instanceProvider = instanceProvider;
+        map.putAll(instanceProperties);
         this.register = register;
         this.installRootKey = installRootKey;
-        computePorts(ip,map, useDefaultPorts);
+        computePorts(instanceProperties,map, useDefaultPorts);
     }
 
     static private void computePorts(Map<String, String> ip, Map<String, String> createProps, boolean useDefaultPorts) {
         int portBase = 8900;
         int kicker = ((new Date()).toString() + ip.get(PayaraModule.DOMAINS_FOLDER_ATTR)+ip.get(PayaraModule.DOMAIN_NAME_ATTR)).hashCode() % 40000;
         kicker = kicker < 0 ? -kicker : kicker;
-        
-        int httpPort = portBase + kicker + 80;
-        int adminPort = portBase + kicker + 48;
+
+        int httpPort;
+        int adminPort;
         if (useDefaultPorts) {
             httpPort = 8080;
             adminPort = 4848;
+        } else {
+            if (ip.get(PayaraModule.HTTPPORT_ATTR) != null) {
+                httpPort = Integer.parseInt(ip.get(PayaraModule.HTTPPORT_ATTR));
+            } else {
+                httpPort = portBase + kicker + 80;
+            }
+            if (ip.get(PayaraModule.ADMINPORT_ATTR) != null) {
+                adminPort = Integer.parseInt(ip.get(PayaraModule.ADMINPORT_ATTR));
+            } else {
+                adminPort = portBase + kicker + 48;
+            }
         }
         ip.put(PayaraModule.HTTPPORT_ATTR, Integer.toString(httpPort));
         ip.put(PayaraModule.ADMINPORT_ATTR, Integer.toString(adminPort));
         createProps.put(PayaraModule.HTTPPORT_ATTR, Integer.toString(httpPort));
         createProps.put(PayaraModule.ADMINPORT_ATTR, Integer.toString(adminPort));
-        if (!useDefaultPorts) {
-            createProps.put(CreateDomain.PORTBASE, Integer.toString(portBase+kicker));
-        }
+//        if (!useDefaultPorts) {
+//            createProps.put(CreateDomain.PORTBASE, Integer.toString(portBase+kicker));
+//        }
     }
 
     @Override
@@ -134,52 +148,47 @@ public class CreateDomain extends Thread {
             String domain = map.get(PayaraModule.DOMAIN_NAME_ATTR);
             String domainDir = map.get(PayaraModule.DOMAINS_FOLDER_ATTR);
             File passWordFile = createTempPasswordFile(pword, "changeit"); //NOI18N
+            String adminPort = instanceProperties.get(PayaraModule.ADMINPORT_ATTR);
+            String httpPort = instanceProperties.get(PayaraModule.HTTPPORT_ATTR);
 
             if (passWordFile == null) {
                 return;
             }
-            String arrnd[];
             
-            if ("".equals(pword)) { // NOI18N
-                arrnd = gip.getNoPasswordCreatDomainCommand(startScript, jarLocation,domainDir,map.get(PORTBASE),uname,domain);
+            List<String> args = new ArrayList<>();
+            args.addAll(asList(new String[]{
+                startScript,
+                "-client", // NOI18N
+                "-jar", // NOI18N
+                jarLocation,
+                "create-domain", //NOI18N
+                "--domaindir", //NOI18N
+                domainDir,
+                "--user", //NOI18N
+                uname
+            }));
+            
+            if ("".equals(pword) && instanceProvider.getNoPasswordOptions().size() > 0) {
+                    args.addAll(instanceProvider.getNoPasswordOptions());
             } else {
-                if (null == map.get(PORTBASE)) {
-                    arrnd = new String[] {startScript,
-                        "-client",  // NOI18N
-                        "-jar",  // NOI18N
-                        jarLocation,
-                        "create-domain", //NOI18N
-                        "--domaindir", //NOI18N
-                        domainDir,
-                        "--portbase", //NOI18N
-                        map.get(PORTBASE),
-                        "--user", //NOI18N
-                        uname,
-                        "--passwordfile", //NOI18N
-                        passWordFile.getAbsolutePath(),
-                        domain
-                    };
-                } else {
-                    arrnd = new String[] {startScript,
-                        "-client",  // NOI18N
-                        "-jar",  // NOI18N
-                        jarLocation,
-                        "create-domain", //NOI18N
-                        "--domaindir", //NOI18N
-                        domainDir,
-                        "--user", //NOI18N
-                        uname,
-                        "--passwordfile", //NOI18N
-                        passWordFile.getAbsolutePath(),
-                        domain
-                    };
-                }
+                args.add("--passwordfile"); //NOI18N
+                args.add(passWordFile.getAbsolutePath());
             }
+            if (null != map.get(PORTBASE)) {
+                args.add("--portbase"); //NOI18N
+                args.add(map.get(PORTBASE));
+            } else {
+                args.add("--adminport"); //NOI18N
+                args.add(adminPort);
+                args.add("--instanceport"); //NOI18N
+                args.add(httpPort);
+            }
+            args.add(domain);
 
             ProgressHandle ph = null;
             try {
                 ExecSupport ee = new ExecSupport();
-                process = Runtime.getRuntime().exec(arrnd, null, irf);
+                process = Runtime.getRuntime().exec(args.toArray(new String[0]), null, irf);
                 pdcan = new PDCancel(process, domainDir + File.separator + domain);
                 ph = ProgressHandleFactory.createHandle(
                         NbBundle.getMessage(this.getClass(), "LBL_Creating_personal_domain"), // NOI18N
@@ -190,11 +199,7 @@ public class CreateDomain extends Thread {
                         NbBundle.getMessage(this.getClass(), "LBL_outputtab"),//NOI18N
                         NbBundle.getMessage(this.getClass(), "LBL_RunningCreateDomainCommand")//NOI18N
                         );
-            } catch (MissingResourceException ex) {
-                showInformation(ex.getLocalizedMessage());
-            } catch (IOException ex) {
-                showInformation(ex.getLocalizedMessage());
-            } catch (InterruptedException ex) {
+            } catch (MissingResourceException | IOException | InterruptedException ex) {
                 showInformation(ex.getLocalizedMessage());
             } catch (RuntimeException ex) {
                 showInformation(ex.getLocalizedMessage());
@@ -222,7 +227,7 @@ public class CreateDomain extends Thread {
             if (0 == retVal) {
                 // The create was successful... create the instance and register it.
                 if (register) {
-                    PayaraInstance gi = PayaraInstance.create(ip,gip);
+                    PayaraInstance gi = PayaraInstance.create(instanceProperties,instanceProvider);
                 }
             } else {
                 if (register) {
@@ -244,11 +249,11 @@ public class CreateDomain extends Thread {
     }
 
     public int getHttpPort() {
-        return Integer.parseInt(ip.get(PayaraModule.HTTPPORT_ATTR));
+        return Integer.parseInt(instanceProperties.get(PayaraModule.HTTPPORT_ATTR));
     }
 
     public int getAdminPort() {
-        return Integer.parseInt(ip.get(PayaraModule.ADMINPORT_ATTR));
+        return Integer.parseInt(instanceProperties.get(PayaraModule.ADMINPORT_ATTR));
     }
 
     static class PDCancel implements Cancellable {
