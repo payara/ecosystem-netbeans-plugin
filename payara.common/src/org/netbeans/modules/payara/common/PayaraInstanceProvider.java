@@ -39,12 +39,14 @@
  * 
  * Portions Copyrighted 2007 Sun Microsystems, Inc.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common;
 
 import java.io.IOException;
 import java.util.*;
+import static java.util.Collections.synchronizedMap;
+import static java.util.Collections.synchronizedSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -89,9 +91,8 @@ public final class PayaraInstanceProvider implements ServerInstanceProvider, Loo
     public static final String EE6_DEPLOYER_FRAGMENT = "deployer:pfv3ee6"; // NOI18N
     public static final String EE6WC_DEPLOYER_FRAGMENT = "deployer:pfv3ee6wc"; // NOI18N
     public static final String PRELUDE_DEPLOYER_FRAGMENT = "deployer:pfv3"; // NOI18N
-    static private String EE6_INSTANCES_PATH = "/PayaraEE6/Instances"; // NOI18N
-    static private String EE6WC_INSTANCES_PATH = "/PayaraEE6WC/Instances"; // NOI18N
-    static public String EE6WC_DEFAULT_NAME = "Payara_Server_3.1"; // NOI18N
+    private static final String EE6_INSTANCES_PATH = "/PayaraEE6/Instances"; // NOI18N
+    private static final String EE6WC_INSTANCES_PATH = "/PayaraEE6WC/Instances"; // NOI18N
 
     // Payara Tooling SDK configuration should be done before any server
     // instance is created and used.
@@ -114,16 +115,7 @@ public final class PayaraInstanceProvider implements ServerInstanceProvider, Loo
                             null,
                             true, 
                             new String[]{"--nopassword"}, // NOI18N
-                            new CommandFactory()  {
-
-                        @Override
-                        public CommandSetProperty getSetPropertyCommand(
-                                String property, String value) {
-                            return new CommandSetProperty(property,
-                                    value, "DEFAULT={0}={1}");
-                        }
-
-                    });
+                            (property, value) -> new CommandSetProperty(property, value, "DEFAULT={0}={1}"));
                 }
             }
             if (runInit) {
@@ -133,11 +125,15 @@ public final class PayaraInstanceProvider implements ServerInstanceProvider, Loo
         }
     }
 
-    public static final Set<String> activeRegistrationSet = Collections.synchronizedSet(new HashSet<String>());
+    public static final Set<String> activeRegistrationSet
+            = synchronizedSet(new HashSet<>());
     
-    private final Map<String, PayaraInstance> instanceMap =
-            Collections.synchronizedMap(new HashMap<String, PayaraInstance>());
-    private static final Set<String> activeDisplayNames = Collections.synchronizedSet(new HashSet<String>());
+    private final Map<String, PayaraInstance> instanceMap
+            = synchronizedMap(new HashMap<>());
+    
+    private static final Set<String> activeDisplayNames
+            = synchronizedSet(new HashSet<>());
+    
     private final ChangeSupport support = new ChangeSupport(this);
 
     final private String[] instancesDirNames;
@@ -155,8 +151,7 @@ public final class PayaraInstanceProvider implements ServerInstanceProvider, Loo
             String displayName, 
             boolean needsJdk6,
             String[] noPasswordOptionsArray, 
-            CommandFactory cf 
-            ) {
+            CommandFactory cf) {
         this.instancesDirNames = instancesDirNames;
         this.displayName = displayName;
         this.uriFragments = uriFragments;
@@ -518,27 +513,8 @@ public final class PayaraInstanceProvider implements ServerInstanceProvider, Loo
         return null;
     }
 
-    String[] getNoPasswordCreatDomainCommand(String startScript, String jarLocation, 
-            String domainDir, String portBase, String uname, String domain) {
-            List<String> retVal = new ArrayList<>();
-        retVal.addAll(Arrays.asList(new String[] {startScript,
-                    "-client",  // NOI18N
-                    "-jar",  // NOI18N
-                    jarLocation,
-                    "create-domain", //NOI18N
-                    "--user", //NOI18N
-                    uname,
-                    "--domaindir", //NOI18N
-                    domainDir}));
-        if (null != portBase) {
-            retVal.add("--portbase"); //NOI18N
-            retVal.add(portBase);
-        }
-        if (noPasswordOptions.size() > 0) {
-            retVal.addAll(noPasswordOptions);
-        }
-        retVal.add(domain);
-        return retVal.toArray(new String[retVal.size()]);
+    List<String> getNoPasswordOptions() {
+        return noPasswordOptions;
     }
 
     public CommandFactory getCommandFactory() {

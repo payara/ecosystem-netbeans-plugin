@@ -41,7 +41,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2018] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common.wizards;
 
@@ -80,6 +80,9 @@ import org.netbeans.modules.payara.spi.PayaraModule;
  */
 public class ServerWizardIterator extends PortCollection implements WizardDescriptor.InstantiatingIterator, ChangeListener {
     
+    private static final String DEFAULT_USERNAME = "admin";
+    private static final String DEFAULT_PASSWORD = "";
+    
     private transient AddServerLocationPanel locationPanel = null;
     private transient AddDomainLocationPanel locationPanel2 = null;
     
@@ -87,11 +90,11 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
     private transient int index = 0;
     private transient WizardDescriptor.Panel[] panels = null;
         
-    private transient List<ChangeListener> listeners = new CopyOnWriteArrayList<>();
+    private final transient List<ChangeListener> listeners = new CopyOnWriteArrayList<>();
     private String domainsDir;
     private String domainName;
-    private ServerDetails sd;
-    private PayaraInstanceProvider gip;
+    private ServerDetails serverDetails;
+    private final PayaraInstanceProvider instanceProvider;
     ServerDetails[] acceptedValues;
     ServerDetails[] downloadableValues;
     private String targetValue;
@@ -107,7 +110,7 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
     public ServerWizardIterator(ServerDetails[] possibleValues, ServerDetails[] downloadableValues) {
         this.acceptedValues = possibleValues;
         this.downloadableValues = downloadableValues;
-        this.gip = PayaraInstanceProvider.getProvider();
+        this.instanceProvider = PayaraInstanceProvider.getProvider();
         this.hostName = "localhost"; // NOI18N
     }
     
@@ -238,7 +241,7 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
         WizardDescriptor.Panel result = getPanels()[index];
         JComponent component = (JComponent)result.getComponent();
         component.putClientProperty(WizardDescriptor.PROP_CONTENT_DATA, getSteps());  // NOI18N
-        component.putClientProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, new Integer(getIndex()));// NOI18N
+        component.putClientProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, getIndex());// NOI18N
         return result;
     }
     
@@ -274,7 +277,7 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
     public void setUseDefaultPorts(boolean useDefaultPorts) {
         this.useDefaultPorts = useDefaultPorts;
     }
-
+    
     public void serDefaultJavaSESupported(boolean defaultJavaSESupported) {
         this.defaultJavaSESupported = defaultJavaSESupported;
     }
@@ -312,15 +315,15 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
                     = File.pathSeparator + domainsD + File.separator + domainN;
         }
         if (null == target || "".equals(target.trim())) {
-            return null != sd
+            return null != serverDetails
                     ? "[" + payaraRoot + domainInfo + "]"
-                    + sd.getUriFragment() + ":" + host + ":" + port
+                    + serverDetails.getUriFragment() + ":" + host + ":" + port
                     : "[" + payaraRoot + domainInfo + "]null:"
                     + host + ":" + port;
         } else {
-            return null != sd
+            return null != serverDetails
                     ? "[" + payaraRoot + domainInfo + "]"
-                    + sd.getUriFragment() + ":" + host + ":" + port+":"+target
+                    + serverDetails.getUriFragment() + ":" + host + ":" + port+":"+target
                     : "[" + payaraRoot + domainInfo + "]null:"
                     + host + ":" + port+":"+target;
         }
@@ -357,7 +360,7 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
     }
 
     boolean hasServer(String uri) {
-        return gip.hasServer(uri);
+        return instanceProvider.hasServer(uri);
     }
 
     ServerDetails isValidInstall(File installDir, File payaraDir, WizardDescriptor wizard) {
@@ -376,7 +379,7 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
         for (ServerDetails candidate : acceptedValues) {
             if (candidate.isInstalledInDirectory(payaraDir)) {
                 wizard.putProperty(WizardDescriptor.PROP_ERROR_MESSAGE, "   ");
-                this.sd = candidate;
+                this.serverDetails = candidate;
                 return candidate;
             }
         }
@@ -502,7 +505,15 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
             ip.put(PayaraModule.DISPLAY_NAME_ATTR, (String) wizard.getProperty("ServInstWizard_displayName")); // NOI18N
             ip.put(PayaraModule.DOMAINS_FOLDER_ATTR, domainsDir);
             ip.put(PayaraModule.DOMAIN_NAME_ATTR, domainName);
-            CreateDomain cd = new CreateDomain("anonymous", "", new File(payaraRoot), ip, gip,false, // NOI18N
+            ip.put(PayaraModule.HTTPPORT_ATTR, Integer.toString(getHttpPort()));
+            ip.put(PayaraModule.ADMINPORT_ATTR, Integer.toString(getAdminPort()));
+            
+            userName = userName == null || userName.trim().isEmpty() ? DEFAULT_USERNAME : userName;
+            password = password == null || password.trim().isEmpty() ? DEFAULT_PASSWORD : password;
+
+            CreateDomain cd = new CreateDomain(
+                    userName, password, new File(payaraRoot),
+                    ip, instanceProvider, false, // NOI18N
                     useDefaultPorts,"INSTALL_ROOT_KEY"); // NOI18N
             int newHttpPort = cd.getHttpPort();
             int newAdminPort = cd.getAdminPort();
@@ -511,14 +522,14 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
                     installRoot, payaraRoot, domainsDir, domainName, 
                     newHttpPort, newAdminPort, userName, password, targetValue,
                     formatUri(hostName, newAdminPort, getTargetValue(),domainsDir,domainName), 
-                    gip);
+                    instanceProvider);
             result.add(instance.getCommonInstance());
         } else {
             PayaraInstance instance = PayaraInstance.create((String) wizard.getProperty("ServInstWizard_displayName"),  // NOI18N
                     installRoot, payaraRoot, domainsDir, domainName,
                     getHttpPort(), getAdminPort(), userName, password, targetValue,
                     formatUri(hostName, getAdminPort(), getTargetValue(), domainsDir, domainName),
-                    gip);
+                    instanceProvider);
             result.add(instance.getCommonInstance());
         }
     }
@@ -531,7 +542,8 @@ public class ServerWizardIterator extends PortCollection implements WizardDescri
         PayaraInstance instance = PayaraInstance.create((String) wizard.getProperty("ServInstWizard_displayName"),   // NOI18N
                 installRoot, payaraRoot, null, domainName,
                 getHttpPort(), getAdminPort(), userName, password, targetValue,
-                formatUri(hn, getAdminPort(), getTargetValue(),null, domainName), gip);
+                formatUri(hn, getAdminPort(), getTargetValue(),null, domainName), 
+                instanceProvider);
         result.add(instance.getCommonInstance());
     }
 
