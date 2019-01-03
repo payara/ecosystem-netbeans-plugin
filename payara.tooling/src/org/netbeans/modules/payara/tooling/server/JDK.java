@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-// Portions Copyright [2018] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2018-2019] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.server;
 
@@ -239,15 +239,19 @@ public final class JDK {
         return new Version();
     }
 
-    public static boolean isCorrectJDK(Optional<Version> minVersion, Optional<Version> maxVersion) {
+    public static boolean isCorrectJDK(Version jdkVersion, Optional<Version> minVersion, Optional<Version> maxVersion) {
         boolean correctJDK = true;
         if (minVersion.isPresent()) {
-            correctJDK = JDK_VERSION.newerOrEquals(minVersion.get());
+            correctJDK = jdkVersion.newerOrEquals(minVersion.get());
         }
         if (correctJDK && maxVersion.isPresent()) {
-            correctJDK = JDK_VERSION.olderOrEquals(maxVersion.get());
+            correctJDK = jdkVersion.olderOrEquals(maxVersion.get());
         }
         return correctJDK;
+    }
+
+    public static boolean isCorrectJDK(Optional<Version> minVersion, Optional<Version> maxVersion) {
+        return isCorrectJDK(IDE_JDK_VERSION, minVersion, maxVersion);
     }
 
     /**
@@ -271,7 +275,7 @@ public final class JDK {
     private static int minor;
     private static int subminor;
     private static int update;
-    private static Version JDK_VERSION;
+    public static Version IDE_JDK_VERSION;
 
     // silently fall back to ridiculous defaults if something is crazily wrong...
     private static void initialize() {
@@ -337,6 +341,6 @@ public final class JDK {
             // ignore -- use defaults
         }
 
-        JDK_VERSION = new Version();
+        IDE_JDK_VERSION = new Version();
     }
 }

@@ -37,12 +37,13 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2019] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.data;
 
 import java.util.List;
 import java.util.Map;
+import org.netbeans.modules.payara.tooling.server.JDK.Version;
 
 /**
  * This interface provides IDE and user specific arguments for starting the server.
@@ -58,5 +59,7 @@ public interface StartupArgs {
     public Map<String, String> getEnvironmentVars();
 
     public String getJavaHome();
+
+    public Version getJavaVersion();
 
 }

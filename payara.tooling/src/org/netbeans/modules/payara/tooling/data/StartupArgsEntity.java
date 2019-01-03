@@ -37,12 +37,19 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2019] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.data;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.netbeans.modules.payara.tooling.server.JDK;
+import org.netbeans.modules.payara.tooling.server.JDK.Version;
+import org.openide.util.Exceptions;
 
 /**
  * Payara Server Entity.
@@ -68,6 +75,9 @@ public class StartupArgsEntity implements StartupArgs {
 
     /** Installation home of Java SDK used to run Payara. */
     private String javaHome;
+
+    /** Version of Java SDK used to run Payara. */
+    private Version javaVersion;
 
     ////////////////////////////////////////////////////////////////////////////
     // Constructors                                                           //
@@ -174,6 +184,25 @@ public class StartupArgsEntity implements StartupArgs {
      */
     public void getJavaHome(String javaHome) {
         this.javaHome = javaHome;
+    }
+
+    /**
+     * Get version of Java SDK used to run Payara.
+     * <p/>
+     * @return version of Java SDK used to run Payara.
+     */
+    @Override
+    public Version getJavaVersion() {
+        if(javaVersion == null && javaHome != null) {
+            try (BufferedReader bufferedReader
+                    = new BufferedReader(new FileReader(new File(javaHome, "release")));) {
+                String version = bufferedReader.readLine();
+                javaVersion = JDK.getVersion(version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\"")));
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return javaVersion;
     }
 
 }
