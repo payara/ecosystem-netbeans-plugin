@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2018 Payara Foundation and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018-2019 Payara Foundation and/or its affiliates. All rights reserved.
  *
  * The contents of this file are subject to the terms of either the GNU
  * General Public License Version 2 only ("GPL") or the Common Development
@@ -52,6 +52,7 @@ public class VersionRepository {
     private static final List<MicroVersion> MICRO_VERSIONS = new ArrayList<>();
 
     private VersionRepository() {
+        MICRO_VERSIONS.add(new MicroVersion("5.191", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("5.184", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("5.183", "8.0"));
         MICRO_VERSIONS.add(new MicroVersion("5.182", "8.0"));
