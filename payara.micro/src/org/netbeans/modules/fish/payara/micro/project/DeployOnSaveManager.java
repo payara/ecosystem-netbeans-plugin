@@ -43,8 +43,6 @@
 package org.netbeans.modules.fish.payara.micro.project;
 
 import org.netbeans.modules.fish.payara.micro.action.ReloadAction;
-import static org.netbeans.modules.fish.payara.micro.project.Bundle.MSG_DeployOnSave_Deployed;
-import static org.netbeans.modules.fish.payara.micro.project.Bundle.MSG_DeployOnSave_Failed;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -85,6 +83,7 @@ import org.openide.filesystems.URLMapper;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import static org.openide.util.NbBundle.getMessage;
 
 public final class DeployOnSaveManager {
 
@@ -505,10 +504,6 @@ public final class DeployOnSaveManager {
             }
         }
 
-        @NbBundle.Messages({
-            "MSG_DeployOnSave_Deployed={0} deployed.",
-            "MSG_DeployOnSave_Failed={0} failed."
-        })
         private boolean notifyServer(J2eeModuleProvider provider, Iterable<Artifact> artifacts) {
             if (LOGGER.isLoggable(Level.FINEST)) {
                 StringBuilder builder = new StringBuilder("Artifacts updated: [");
@@ -533,10 +528,10 @@ public final class DeployOnSaveManager {
             String message;
             switch (state) {
                 case MODULE_UPDATED:
-                    message = MSG_DeployOnSave_Deployed(provider.getDeploymentName());
+                    message = getMessage(DeployOnSaveManager.class, "MSG_DeployOnSave_Deployed", provider.getDeploymentName());
                     break;
                 case DEPLOYMENT_FAILED:
-                    message = MSG_DeployOnSave_Failed(provider.getDeploymentName());
+                    message = getMessage(DeployOnSaveManager.class, "MSG_DeployOnSave_Failed", provider.getDeploymentName());
                     break;
                 default:
                     message = null;

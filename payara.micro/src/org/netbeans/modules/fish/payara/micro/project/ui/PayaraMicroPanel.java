@@ -39,7 +39,6 @@
 package org.netbeans.modules.fish.payara.micro.project.ui;
 
 import org.netbeans.modules.fish.payara.micro.project.VersionRepository;
-import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.LBL_PayaraMicroSettings;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import static org.netbeans.modules.fish.payara.micro.Constants.PROP_AUTO_BIND_HTTP;
@@ -47,6 +46,7 @@ import static org.netbeans.modules.fish.payara.micro.Constants.PROP_PAYARA_MICRO
 import org.netbeans.modules.fish.payara.micro.project.MicroVersion;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.openide.WizardDescriptor;
+import static org.openide.util.NbBundle.getMessage;
 
 /**
  *
@@ -61,7 +61,7 @@ class PayaraMicroPanel extends JPanel {
 
     @Override
     public String getName() {
-        return LBL_PayaraMicroSettings();
+        return getMessage(PayaraMicroPanel.class, "LBL_MavenProjectSettings");
     }
 
     void readSettings(WizardDescriptor descriptor) {

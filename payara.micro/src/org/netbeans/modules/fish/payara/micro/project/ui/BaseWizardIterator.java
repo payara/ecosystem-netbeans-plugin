@@ -42,9 +42,6 @@
 // Portions Copyright [2018] [Payara Foundation and/or its affiliates]
 package org.netbeans.modules.fish.payara.micro.project.ui;
 
-import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.LBL_MavenProjectSettings;
-import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.LBL_NameFormat;
-import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.LBL_PayaraMicroSettings;
 import java.awt.Component;
 import java.util.NoSuchElementException;
 import javax.swing.JComponent;
@@ -52,7 +49,7 @@ import javax.swing.event.ChangeListener;
 import org.netbeans.api.validation.adapters.WizardDescriptorAdapter;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.openide.WizardDescriptor;
-import org.openide.util.NbBundle.Messages;
+import static org.openide.util.NbBundle.getMessage;
 
 /**
  * Base abstract class for all types of Maven enterprise projects.
@@ -85,9 +82,8 @@ public abstract class BaseWizardIterator implements WizardDescriptor.BackgroundI
     }
 
     @Override
-    @Messages("LBL_NameFormat={0} of {1}")
     public String name() {
-        return LBL_NameFormat(index + 1, panels.length);
+        return getMessage(BaseWizardIterator.class, "LBL_NameFormat", index + 1, panels.length);
     }
 
     @Override
@@ -129,14 +125,13 @@ public abstract class BaseWizardIterator implements WizardDescriptor.BackgroundI
     public final void removeChangeListener(ChangeListener l) {
     }
 
-    @Messages({
-        "LBL_MavenProjectSettings=Name and Location",
-        "LBL_PayaraMicroSettings=Payara Micro"
-    })
     private void updateSteps() {
         // Make sure list of steps is accurate.
         String[] steps = new String[panels.length];
-        String[] basicOnes = new String[]{ LBL_MavenProjectSettings(), LBL_PayaraMicroSettings() };
+        String[] basicOnes = new String[]{
+            getMessage(BaseWizardIterator.class, "LBL_MavenProjectSettings"),
+            getMessage(BaseWizardIterator.class, "LBL_PayaraMicroSettings")
+        };
         System.arraycopy(basicOnes, 0, steps, 0, basicOnes.length);
         for (int i = 0; i < panels.length; i++) {
             Component c = panels[i].getComponent();

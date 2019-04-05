@@ -59,7 +59,6 @@ import org.netbeans.modules.maven.model.pom.Profile;
 import org.netbeans.modules.maven.model.pom.Properties;
 import org.netbeans.modules.maven.model.pom.Repository;
 import org.netbeans.modules.maven.model.pom.RepositoryPolicy;
-import org.netbeans.modules.maven.model.pom.spi.POMExtensibilityElementBase;
 import org.openide.filesystems.FileObject;
 import static org.openide.filesystems.FileUtil.toFileObject;
 import org.openide.util.Exceptions;
@@ -317,8 +316,8 @@ public class POMManager {
             if (childDOM.getValue() != null) {
                 if (target instanceof Configuration) {
                     ((Configuration) target).setSimpleParameter(childDOM.getName(), childDOM.getValue());
-                } else if (target instanceof POMExtensibilityElementBase) {
-                    Optional<POMComponent> targetComponentOptioal = ((POMExtensibilityElementBase) target).getChildren()
+                } else if (target instanceof POMExtensibilityElement) {
+                    Optional<POMComponent> targetComponentOptioal = ((POMExtensibilityElement) target).getChildren()
                             .stream()
                             .filter(targetElement -> {
                                 String nodeName = targetElement.getPeer().getNodeName();
