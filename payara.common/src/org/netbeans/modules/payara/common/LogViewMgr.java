@@ -41,7 +41,7 @@
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2019] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.common;
 
@@ -109,7 +109,7 @@ public class LogViewMgr {
      * Singleton model pattern
      */
     private static final Map<String, WeakReference<LogViewMgr>> instances =
-            new HashMap<String, WeakReference<LogViewMgr>>();
+            new HashMap<>();
 
     /**
      * Server URI for this log view
@@ -133,8 +133,10 @@ public class LogViewMgr {
      * feeble attempt to have our cake and eat it too :)  I'll probably regret
      * it later.
      */
-    private final List<WeakReference<LoggerRunnable>> readers =
-            Collections.synchronizedList(new ArrayList<WeakReference<LoggerRunnable>>());
+    private final List<WeakReference<LoggerRunnable>> readers
+            = Collections.synchronizedList(new ArrayList<>());
+
+    private final Map<String, String> localizedLevels = getLevelMap();
 
     /**
      * Creates and starts a new instance of LogViewMgr
@@ -161,7 +163,7 @@ public class LogViewMgr {
      * Returns uri specific instance of LogViewMgr
      * 
      * @param uri the uri of the server
-     * @return uri specific instamce of LogViewMgr
+     * @return uri specific instance of LogViewMgr
      */
     public static LogViewMgr getInstance(String uri) {
         LogViewMgr logViewMgr;
@@ -170,7 +172,7 @@ public class LogViewMgr {
             logViewMgr = viewRef != null ? viewRef.get() : null;
             if(logViewMgr == null) {
                 logViewMgr = new LogViewMgr(uri);
-                instances.put(uri, new WeakReference<LogViewMgr>(logViewMgr));
+                instances.put(uri, new WeakReference<>(logViewMgr));
             }
         }
         return logViewMgr;
@@ -199,7 +201,10 @@ public class LogViewMgr {
     /**
      * Reads a newly included InputSreams.
      *
-     * @param inputStreams InputStreams to read
+     * @param recognizers
+     * @param fromFile
+     * @param instance
+     * @param serverLogs
      */
     public void readInputStreams(List<Recognizer> recognizers, boolean fromFile,
             PayaraInstance instance, FetchLog... serverLogs) {
@@ -210,7 +215,7 @@ public class LogViewMgr {
                 // LoggerRunnable will close the stream if necessary.
                 LoggerRunnable logger = new LoggerRunnable(recognizers,
                         serverLog, fromFile, instance);
-                readers.add(new WeakReference<LoggerRunnable>(logger));
+                readers.add(new WeakReference<>(logger));
                 Thread t = new Thread(logger);
                 t.start();
             }
@@ -259,6 +264,9 @@ public class LogViewMgr {
      * content being written.
      * 
      * @param s message to write
+     * @param link
+     * @param important
+     * @param error
      */
     public synchronized void write(String s, OutputListener link, boolean important, boolean error) {
         try {
@@ -294,44 +302,19 @@ public class LogViewMgr {
         return writer;
     }
 
-    private final Locale logLocale = getLogLocale();
-    private static final String logBundleName = "org.netbeans.modules.payara.common.resources.logging";
-    private final String localizedWarning = getLocalized(Level.WARNING.getName());
-    private final String localizedSevere = getLocalized(Level.SEVERE.getName());
-    private final Map<String, String> localizedLevels = getLevelMap();
-    
-    private Locale getLogLocale() {
-        // XXX detect and use server language/country/variant instead of IDE's.
-        String language = System.getProperty("user.language"); // NOI18N
-        if(language != null) {
-            return new Locale(language, System.getProperty("user.country", ""), System.getProperty("user.variant", "")); // NOI18N
-        }
-        return Locale.getDefault();
-    }
-
-    private String getLocalized(String text) {
-        ResourceBundle bundle = ResourceBundle.getBundle(logBundleName, logLocale);
-        String localized = bundle.getString(text);
-        return localized != null ? localized : text;
-    }
-
     private Map<String, String> getLevelMap() {
         Map<String, String> levelMap = new HashMap<String, String>();
         for(Level l: new Level [] { Level.ALL, Level.CONFIG, Level.FINE,
                 Level.FINER, Level.FINEST, Level.INFO, Level.SEVERE, Level.WARNING } ) {
             String name = l.getName();
-            levelMap.put(name, getLocalized(name));
+            levelMap.put(name, l.getLocalizedName());
         }
         return levelMap;
     }
 
-    private String getLocalizedLevel(String level) {
-        String localizedLevel = localizedLevels.get(level);
-        return localizedLevel != null ? localizedLevel : level;
-    }
-
     /**
      * Selects output panel
+     * @param force
      */
     public synchronized void selectIO(boolean force) {
         if(LOGGER.isLoggable(Level.FINEST)) {
@@ -373,7 +356,7 @@ public class LogViewMgr {
                             if(tc == null) {
                                 tc = WindowManager.getDefault().findTopComponent(OUTPUT_WINDOW_TCID);
                                 if(tc != null) {
-                                    outputTCRef = new WeakReference<TopComponent>(tc);
+                                    outputTCRef = new WeakReference<>(tc);
                                 }
                             }
                             if(tc != null && !tc.isOpened()) {
@@ -394,7 +377,7 @@ public class LogViewMgr {
     private final String OUTPUT_WINDOW_TCID = "output"; // NOI18N
     private volatile long lastVisibleCheck = 0;
     private WeakReference<TopComponent> outputTCRef =
-            new WeakReference<TopComponent>(null);
+            new WeakReference<>(null);
     private volatile Method setClosedMethod;
 
     private void invokeSetClosed(InputOutput io, boolean closed) {
@@ -432,7 +415,7 @@ public class LogViewMgr {
         private FetchLog serverLog;
         private final boolean ignoreEof;
         private volatile boolean shutdown;
-        private PayaraInstance instance;
+        private final PayaraInstance instance;
         //private final Map<String, String> properties;
         
         public LoggerRunnable(List<Recognizer> recognizers, FetchLog serverLog, 
@@ -594,7 +577,7 @@ public class LogViewMgr {
         }
     }
 
-    private static Pattern colorPattern = Pattern.compile(
+    private static final Pattern COLOR_PATTERN = Pattern.compile(
             "\\033\\[([\\d]{1,3})(?:;([\\d]{1,3}))?(?:;([\\d]{1,3}))?(?:;([\\d]{1,3}))?(?:;([\\d]{1,3}))?m"); // NOI18N
 
     private static final Color LOG_RED = new Color(204, 0, 0);
@@ -604,7 +587,7 @@ public class LogViewMgr {
     private static final Color LOG_MAGENTA = new Color(204, 0, 204);
     private static final Color LOG_CYAN = new Color(0, 153, 255);
 
-    private static Color [] colorTable = {
+    private static final Color [] COLOR_TABLE = {
         Color.BLACK, LOG_RED, LOG_GREEN, LOG_YELLOW, LOG_BLUE, LOG_MAGENTA, LOG_CYAN,
     };
 
@@ -639,7 +622,7 @@ public class LogViewMgr {
 
         private void processColors() {
             try {
-                Matcher matcher = colorPattern.matcher(message);
+                Matcher matcher = COLOR_PATTERN.matcher(message);
                 boolean result = matcher.find();
                 if(result) {
                     StringBuffer sb = new StringBuffer(message.length());
@@ -648,7 +631,7 @@ public class LogViewMgr {
                         for(int i = 1; i < count && matcher.group(i) != null; i++) {
                             int code = Integer.parseInt(matcher.group(i));
                             if(code >= 30 && code <= 36 && color == null) {
-                                color = colorTable[code - 30];
+                                color = COLOR_TABLE[code - 30];
                             }
                         }
                         matcher.appendReplacement(sb, "");
@@ -722,10 +705,6 @@ public class LogViewMgr {
         }
         return s;
     }
-    
-    private boolean isWarning(String line) {
-        return line.startsWith(localizedWarning) || line.startsWith(localizedSevere);
-    }
 
     private static interface Filter {
         
@@ -756,7 +735,7 @@ public class LogViewMgr {
     
     private static final class StreamFilter extends StateFilter {
 
-        private static final Pattern messagePattern = Pattern.compile("([\\p{Lu}]{0,16}?):|([^\\r\\n]{0,24}?\\d\\d?:\\d\\d?:\\d\\d?)"); // NOI18N
+        private static final Pattern MESSAGE_PATTERN = Pattern.compile("([\\p{Lu}]{0,16}?):|([^\\r\\n]{0,24}?\\d\\d?:\\d\\d?:\\d\\d?)"); // NOI18N
         
         private String line;
         
@@ -803,7 +782,7 @@ public class LogViewMgr {
                     line = msg.toString();
                     msg.setLength(0);
 
-                    Matcher matcher = messagePattern.matcher(line);
+                    Matcher matcher = MESSAGE_PATTERN.matcher(line);
                     if(matcher.find() && matcher.start() == 0 && matcher.groupCount() > 1 && matcher.group(2) != null) {
                         result = null;
                     } else {
