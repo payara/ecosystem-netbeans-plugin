@@ -150,7 +150,7 @@ public class PayaraDescriptorDataObject extends SunDescriptorDataObject {
 
     public static final String DD_ACTION_PATH = "Loaders/text/x-dd-payara/Actions";
 
-    public static final String DD_ICON = "org/netbeans/modules/j2ee/sun/ddloaders/resources/DDDataIcon.gif";
+    public static final String DD_ICON = "org/netbeans/modules/payara/eecommon/dd/resources/DDDataIcon.gif";
 
     public static final String DD_MIME_TYPE = "text/x-dd-payara-web+xml";
 

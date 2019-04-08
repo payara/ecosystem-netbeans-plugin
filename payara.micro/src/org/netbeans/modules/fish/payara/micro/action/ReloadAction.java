@@ -41,16 +41,11 @@ package org.netbeans.modules.fish.payara.micro.action;
 import static org.netbeans.modules.fish.payara.micro.Constants.COMPILE_EXPLODE_ACTION;
 import static org.netbeans.modules.fish.payara.micro.Constants.EXPLODE_ACTION;
 import static org.netbeans.modules.fish.payara.micro.Constants.RELOAD_FILE;
-import static org.netbeans.modules.fish.payara.micro.action.Bundle.ERR_Compile_On_Save_Not_Enabled;
-import static org.netbeans.modules.fish.payara.micro.action.Bundle.ERR_Payara_Micro_Plugin_Not_Found;
-import static org.netbeans.modules.fish.payara.micro.action.Bundle.TXT_Reload;
 import org.netbeans.modules.fish.payara.micro.project.MicroApplication;
 import java.io.File;
 import java.io.IOException;
 import org.apache.maven.project.MavenProject;
 import org.netbeans.api.project.Project;
-import static org.netbeans.modules.fish.payara.micro.Constants.STOP_ACTION;
-import org.netbeans.modules.fish.payara.micro.project.MicroApplicationProvider;
 import org.netbeans.modules.maven.api.NbMavenProject;
 import org.netbeans.modules.maven.api.execute.RunUtils;
 import static org.netbeans.modules.maven.api.execute.RunUtils.isCompileOnSaveEnabled;
@@ -60,7 +55,7 @@ import org.netbeans.modules.maven.execute.model.NetbeansActionMapping;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
+import static org.openide.util.NbBundle.getMessage;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -82,19 +77,14 @@ public class ReloadAction {
         mavenProject = nbMavenProject.getMavenProject();
     }
 
-    @NbBundle.Messages({
-        "TXT_Reload=Reload ({0})",
-        "ERR_Compile_On_Save_Not_Enabled=Reload Error ({0} : Compile on save not enabled)",
-        "ERR_Payara_Micro_Plugin_Not_Found=Reload Error ({0} : Payara Micro plugin not found)"
-    })
     public void actionPerformed() {
         MicroApplication microApplication = MicroApplication.getInstance(project);
         if (microApplication == null) {
-            StatusDisplayer.getDefault()
-                    .setStatusText(ERR_Payara_Micro_Plugin_Not_Found(mavenProject.getArtifactId()));
+            StatusDisplayer.getDefault().setStatusText(
+                    getMessage(ReloadAction.class, "ERR_Payara_Micro_Plugin_Not_Found", mavenProject.getArtifactId()));
         } else if (!isCompileOnSaveEnabled(microApplication.getProject())) {
-            StatusDisplayer.getDefault()
-                    .setStatusText(ERR_Compile_On_Save_Not_Enabled(mavenProject.getArtifactId()));
+            StatusDisplayer.getDefault().setStatusText(
+                    getMessage(ReloadAction.class, "ERR_Compile_On_Save_Not_Enabled", mavenProject.getArtifactId()));
         } else {
             runMavenCommands();
         }
@@ -109,7 +99,7 @@ public class ReloadAction {
             String action = RunUtils.isCompileOnSaveEnabled(project)? EXPLODE_ACTION : COMPILE_EXPLODE_ACTION;
             NetbeansActionMapping mapping = ActionToGoalUtils.getDefaultMapping(action, project);
             ModelRunConfig rc = new ModelRunConfig(project, mapping, mapping.getActionName(), null, Lookup.EMPTY, false);
-            rc.setTaskDisplayName(TXT_Reload(mavenProject.getArtifactId()));
+            rc.setTaskDisplayName(getMessage(ReloadAction.class, "TXT_Reload", mavenProject.getArtifactId()));
             rc.getGoals().addAll(PayaraActionsProvider.getGoals(action));
             RunUtils.run(rc);
         });

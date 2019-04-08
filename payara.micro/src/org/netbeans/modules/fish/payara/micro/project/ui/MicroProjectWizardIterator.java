@@ -41,7 +41,6 @@ package org.netbeans.modules.fish.payara.micro.project.ui;
 import static org.netbeans.modules.fish.payara.micro.Constants.ARCHETYPE_ARTIFACT_ID;
 import static org.netbeans.modules.fish.payara.micro.Constants.ARCHETYPE_GROUP_ID;
 import org.netbeans.modules.fish.payara.micro.project.VersionRepository;
-import static org.netbeans.modules.fish.payara.micro.project.ui.Bundle.template_PayaraMicroApp;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -68,6 +67,7 @@ import org.openide.WizardDescriptor;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle.Messages;
+import static org.openide.util.NbBundle.getMessage;
 
 /**
  *
@@ -130,7 +130,7 @@ public final class MicroProjectWizardIterator extends BaseWizardIterator {
     @Override
     public void initialize(WizardDescriptor wiz) {
         super.initialize(wiz);
-        wiz.putProperty("NewProjectWizard_Title", template_PayaraMicroApp());
+        wiz.putProperty("NewProjectWizard_Title", getMessage(MicroProjectWizardIterator.class, "TTL_NewProjectWizard"));
     }
 
     @Override
