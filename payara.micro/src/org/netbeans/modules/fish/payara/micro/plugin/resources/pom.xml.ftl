@@ -16,7 +16,7 @@
             <plugin>
                 <groupId>fish.payara.maven.plugins</groupId>
                 <artifactId>payara-micro-maven-plugin</artifactId>
-                <version>1.0.1</version>
+                <version>1.0.4</version>
                 <configuration>
                     <payaraVersion>${r"${version.payara}"}</payaraVersion>
                     <deployWar>false</deployWar>
