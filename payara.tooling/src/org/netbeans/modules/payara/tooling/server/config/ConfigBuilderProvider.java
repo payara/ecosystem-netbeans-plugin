@@ -37,7 +37,7 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2019] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.server.config;
 
@@ -70,17 +70,26 @@ public class ConfigBuilderProvider {
 
     /** Library builder default configuration file. */
     private static final URL CONFIG_V3
-            = ConfigBuilderProvider.class.getResource("GlassFishV3.xml");
-
+            = ConfigBuilderProvider.class.getResource("PayaraV3.xml");
 
     /** Library builder configuration since Payara 4.1. */
     private static final Config.Next CONFIG_V4_1
             = new Config.Next(PayaraVersion.PF_4_1_144,
-            ConfigBuilderProvider.class.getResource("GlassFishV4_1.xml"));
+            ConfigBuilderProvider.class.getResource("PayaraV4_1.xml"));
+
+    /** Library builder configuration since Payara 5.181 */
+    private static final Config.Next CONFIG_V5_181
+            = new Config.Next(PayaraVersion.PF_5_181,
+            ConfigBuilderProvider.class.getResource("PayaraV5_181.xml"));
+
+    /** Library builder configuration since Payara 5.192 */
+    private static final Config.Next CONFIG_V5_192
+            = new Config.Next(PayaraVersion.PF_5_192,
+            ConfigBuilderProvider.class.getResource("PayaraV5_192.xml"));
 
     /** Library builder configuration for Payara cloud. */
     private static final Config config
-            = new Config(CONFIG_V3, CONFIG_V4_1);
+            = new Config(CONFIG_V3, CONFIG_V4_1, CONFIG_V5_181, CONFIG_V5_192);
 
     /** Builders array for each server instance. */
     private static final Map<PayaraServer, ConfigBuilder> builders

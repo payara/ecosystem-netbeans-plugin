@@ -339,6 +339,7 @@ public class ServerTasks {
     private static void appendOptions(StringBuilder argumentBuf,
             List<String> optList, Map<String, String> varMap) {
         final String METHOD = "appendOptions";
+        List<String> moduleOptions = new ArrayList<>();
         HashMap<String, String> keyValueArgs = new HashMap<>();
         LinkedList<String> keyOrder = new LinkedList<>();
         String name, value;
@@ -362,10 +363,16 @@ public class ServerTasks {
                 value = null;
                 LOGGER.log(Level.FINER, METHOD, "jvmOpt", name);
             }
-            if (!keyValueArgs.containsKey(name)) {
-                keyOrder.add(name);
+
+            // seperate modules options
+            if (name.startsWith("--add-")) {
+                moduleOptions.add(opt);
+            } else {
+                if (!keyValueArgs.containsKey(name)) {
+                    keyOrder.add(name);
+                }
+                keyValueArgs.put(name, value);
             }
-            keyValueArgs.put(name, value);
         }
 
         // override the values that are found in the domain.xml file.
@@ -389,6 +396,9 @@ public class ServerTasks {
                 keyValueArgs.put(JavaUtils.systemPropertyName(prop), value);
             }
         }
+
+        // appending module options --add-modules --add-opens --add-exports
+        argumentBuf.append(String.join(" ", moduleOptions));
 
         // appending key=value options to the command line argument
         // using the same order as they came in argument - important!

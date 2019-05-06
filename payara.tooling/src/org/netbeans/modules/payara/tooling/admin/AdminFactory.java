@@ -37,7 +37,7 @@
  *
  * Contributor(s):
  */
-// Portions Copyright [2017-2010] [Payara Foundation and/or its affiliates]
+// Portions Copyright [2017-2019] [Payara Foundation and/or its affiliates]
 
 package org.netbeans.modules.payara.tooling.admin;
 
@@ -102,6 +102,7 @@ public abstract class AdminFactory {
             case PF_5_183:
             case PF_5_184:
             case PF_5_191:
+            case PF_5_192:
                 return AdminFactoryRest.getInstance();
             // Anything else is not unknown.
             default:
