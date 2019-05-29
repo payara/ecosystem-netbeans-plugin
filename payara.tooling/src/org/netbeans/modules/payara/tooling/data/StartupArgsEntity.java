@@ -196,8 +196,13 @@ public class StartupArgsEntity implements StartupArgs {
         if(javaVersion == null && javaHome != null) {
             try (BufferedReader bufferedReader
                     = new BufferedReader(new FileReader(new File(javaHome, "release")));) {
-                String version = bufferedReader.readLine();
-                javaVersion = JDK.getVersion(version.substring(version.indexOf("\"") + 1, version.lastIndexOf("\"")));
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    if (line.startsWith("JAVA_VERSION")) {
+                        javaVersion = JDK.getVersion(line.substring(line.indexOf("\"") + 1, line.lastIndexOf("\"")));
+                        break;
+                    }
+                }
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
