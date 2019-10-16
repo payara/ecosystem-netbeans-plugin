@@ -1,3 +1,5 @@
+##### ** Payara NetBeans IDE plugin repository is no more active and the source has been donated to Apache NetBeans IDE  [https://github.com/apache/netbeans]. Checkout the latest version from here: https://netbeans.apache.org/download/
+
 ![#badassfish](payara-logo-blue.png)
 
 ## Payara NetBeans IDE plugin
